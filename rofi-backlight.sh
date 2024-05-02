@@ -12,9 +12,9 @@ fi
 options=(Decrease Increase Maximum)
 
 declare -A actions
-actions[Decrease]="sudo brightness down"
-actions[Increase]="sudo brightness up"
-actions[Maximum]="sudo brightness 100"
+actions[Decrease]="backlight down"
+actions[Increase]="backlight up"
+actions[Maximum]="backlight 100"
 
 if [ $# -gt 0 ]
 then
@@ -27,7 +27,7 @@ then
     done
     if [[ $1 =~ ^[0-9]+$ ]]; then
 #    if [ "$1" -eq "$1" ] 2> /dev/null; then
-	    sudo brightness $1 > /dev/null 2>&1
+	    backlight $1 > /dev/null 2>&1
     fi
 fi
 for entry in "${options[@]}"

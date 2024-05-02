@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
 DISCONNECT="Disconnect"
-UP="Volume+"
-DOWN="Volume-"
-MUTE="Mute"
+UP="Volume Up"
+DOWN="Volume Down"
+MAX="Volume Max"
+MUTE="Volume Mute"
 stations=(VeniceClassical Cinemix RadioDismuke 1920sRadioNetwork 1940sRadio 1940sUKRadio BigBlueSwing MilanoLounge LoungeRadio)
 
 declare -A url
@@ -24,7 +25,7 @@ then
         case "$1" in
                 "$DISCONNECT")
 			killall ffplay > /dev/null 2>&1
-			exit 0
+			unset nowplaying
                         ;;
                 "$UP")
 			amixer -q set Master 5+ > /dev/null 2>&1
@@ -32,13 +33,16 @@ then
                 "$DOWN")
 			amixer -q set Master 5- > /dev/null 2>&1
                         ;;
+                "$MAX")
+			amixer -q set Master 100 > /dev/null 2>&1
+                        ;;
                 "$MUTE")
 			amixer -q set Master toggle > /dev/null 2>&1
                         ;;
                 *)
 			killall ffplay > /dev/null 2>&1
 			coproc( ffplay -loglevel 8 -nodisp ${url[$1]} > /dev/null 2>&1 )
-			exit 0
+			nowplaying=${url[$1]}
                         ;;
         esac
 fi
@@ -49,14 +53,12 @@ mutedisabled=$(amixer get Master | sed -e '1,4d' -e 's/^.*\[//' -e 's/\]//')
 echo -en "\0message\x1f<b>Current volume:</b> $volume\n"
 echo $UP
 echo $DOWN
+echo $MAX
 if [[ $mutedisabled = "off" ]]; then
-	echo -en "\0urgent\x1f2\n"
+	echo -en "\0urgent\x1f3\n"
 	echo $MUTE
 else
 	echo $MUTE
-fi
-if [[ -n $nowplaying ]]; then
-    	echo -en "$DISCONNECT\0permanent\x1true\n"
 fi
 	
 COUNTER=4
@@ -75,6 +77,9 @@ do
     let COUNTER++
 done
 
+if [[ -n $nowplaying ]]; then
+    	echo -en "$DISCONNECT\0permanent\x1true\n"
+fi
 
 echo -e "\0no-custom\x1ftrue\n"
 echo -en "\0prompt\x1fradio\n"

@@ -9,8 +9,10 @@ YES="Yes"
 if [[ -n $ROFI_DATA ]]; then
 	if [[ "$1" = "$YES" ]]; then 
 		coproc ( $ROFI_DATA  > /dev/null  2>&1 )
+		exit 0
+	else
+		unset ROFI_DATA
 	fi
-	exit 0
 fi
 
 
@@ -41,6 +43,9 @@ then
 			echo -en "$CANCEL\n"
 			exit 0
                         ;;
+		"$CANCEL")
+			echo -en "\0message\x1f\n"
+			;;
                 *)
 			exit 0
                         ;;
