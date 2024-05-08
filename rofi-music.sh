@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+set -e
+set -u
+
 DISCONNECT="Disconnect"
 UP="Volume Up"
 DOWN="Volume Down"
@@ -43,6 +46,7 @@ then
 			killall ffplay > /dev/null 2>&1
 			coproc( ffplay -loglevel 8 -nodisp ${url[$1]} > /dev/null 2>&1 )
 			nowplaying=${url[$1]}
+			exit 0
                         ;;
         esac
 fi

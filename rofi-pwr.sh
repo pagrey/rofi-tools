@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+set -e
+set -u
+
 I3EXIT="Exit i3"
 REBOOT="Reboot"
 POWEROFF="Poweroff"

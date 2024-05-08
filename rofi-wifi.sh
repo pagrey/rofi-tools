@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+set -e
+set -u
+
 DEVICE="wlan0"
 DISCONNECT="Disconnect"
 SCAN="Scan networks"
