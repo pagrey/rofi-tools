@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 set -e
-set -u
 
 I3EXIT="Exit i3"
 REBOOT="Reboot"
@@ -11,7 +10,7 @@ YES="Yes"
 
 if [[ -n $ROFI_DATA ]]; then
 	if [[ "$1" = "$YES" ]]; then 
-		coproc ( $ROFI_DATA  > /dev/null  2>&1 )
+		loginctl terminate-session ${XDG_SESSION_ID-}
 		exit 0
 	else
 		unset ROFI_DATA

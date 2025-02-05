@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-set -u
-
 DEVICE="wlan0"
 DISCONNECT="Disconnect"
 SCAN="Scan networks"
@@ -87,9 +84,17 @@ fi
 
 echo -en "\0markup-rows\x1ftrue\n"
 
+CON_STATE=$(iwctl station $DEVICE show)
+if [[ "$CON_STATE" =~ " connected" ]]; then
+	echo -en "$DISCONNECT\0nonselectable\x1ffalse\n"
+fi
+
+echo -en "$SCAN\n"
+
+
 # List SSID 
 
-COUNTER=0
+COUNTER=2
 while IFS= read -r line; do
 	if [[ -n $@ && "$1" = "$SCAN" ]]; then
         	line=${line:0}
@@ -110,11 +115,4 @@ while IFS= read -r line; do
 		let COUNTER++
 	fi
 done <<< "$WORKING_LIST"
-
-
-CON_STATE=$(iwctl station $DEVICE show)
-if [[ "$CON_STATE" =~ " connected" ]]; then
-	echo -en "$DISCONNECT\0nonselectable\x1ffalse\n"
-fi
-echo -en "$SCAN\n"
 

@@ -1,25 +1,22 @@
 #!/usr/bin/env bash
 
-set -e
-set -u
-
 DISCONNECT="Disconnect"
 UP="Volume Up"
 DOWN="Volume Down"
 MAX="Volume Max"
 MUTE="Volume Mute"
-stations=(VeniceClassical Cinemix RadioDismuke 1920sRadioNetwork 1940sRadio 1940sUKRadio BigBlueSwing MilanoLounge LoungeRadio)
+stations=(Cinemix VeniceClassical RadioDismuke 1920sRadioNetwork 1940sRadio 1940sUKRadio BigBlueSwing ElectroLounge LoungeRadio)
 
 declare -A url
-url[VeniceClassical]="http://116.202.241.212:8010"
-url[Cinemix]="http://51.81.46.118:1190"
 url[RadioDismuke]="http://stream1.early1900s.org:8080"
 url[1920sRadioNetwork]="http://208.85.242.72:8398"
 url[1940sRadio]="http://199.189.111.28:8012"
 url[1940sUKRadio]="http://91.121.134.23:8100"
 url[BigBlueSwing]="http://209.236.126.18:8002"
-url[MilanoLounge]=" http://centova.wlservices.org:8010/autodj"
+url[ElectroLounge]="https://electrolounge.stream.laut.fm/electrolounge?pl=pls&t302=2024-08-26_23-57-55&uuid=ba9e3f02-429f-4659-9ae5-acf6715fb367"
 url[LoungeRadio]="http://nl1.streamhosting.ch:80"
+url[VeniceClassical]="http://116.202.241.212:8010"
+url[Cinemix]="http://51.81.46.118:1190"
 
 nowplaying=$(ps hw -C ffplay -o args= | sed -e 's/^.*nodisp //')
 
@@ -29,6 +26,7 @@ then
                 "$DISCONNECT")
 			killall ffplay > /dev/null 2>&1
 			unset nowplaying
+			exit 0
                         ;;
                 "$UP")
 			amixer -q set Master 5+ > /dev/null 2>&1
@@ -55,17 +53,11 @@ volume=$(amixer get Master | sed -e '1,4d' -e 's/^.*[0-9\] \[//' -e 's/\].*//')
 mutedisabled=$(amixer get Master | sed -e '1,4d' -e 's/^.*\[//' -e 's/\]//')
 
 echo -en "\0message\x1f<b>Current volume:</b> $volume\n"
-echo $UP
-echo $DOWN
-echo $MAX
-if [[ $mutedisabled = "off" ]]; then
-	echo -en "\0urgent\x1f3\n"
-	echo $MUTE
-else
-	echo $MUTE
+if [[ -n $nowplaying ]]; then
+    	echo -en "$DISCONNECT\0permanent\x1true\n"
 fi
 	
-COUNTER=4
+COUNTER=1
 for entry in "${stations[@]}"
 do
     if [[ $nowplaying = ${url[$entry]} ]]
@@ -81,8 +73,15 @@ do
     let COUNTER++
 done
 
-if [[ -n $nowplaying ]]; then
-    	echo -en "$DISCONNECT\0permanent\x1true\n"
+echo $UP
+echo $DOWN
+echo $MAX
+let COUNTER+=3
+if [[ $mutedisabled = "off" ]]; then
+	echo -en "\0urgent\x1f$COUNTER\n"
+	echo $MUTE
+else
+	echo $MUTE
 fi
 
 echo -e "\0no-custom\x1ftrue\n"
