@@ -94,7 +94,7 @@ then
 else
 	if ip link show $WIRED | grep -qs "[<,]UP[,>]"; then
 		# wired up
-		SIP=$(ip addr show enp0s31f6 | grep inet | awk '{print $2}')
+		SIP=$(ip addr show $WIRED | grep inet | awk '{print $2}')
 		echo -e "\0no-custom\x1ftrue"
 		echo -en "\0prompt\x1fnetwork\n"
 		echo -en "\0message\x1fconnected:$SIP\n"
