@@ -43,11 +43,13 @@ then
 			exit 0
                         ;;
 		"$STARTWIRELESS")
-			# start iwd and scan
-			sudo ip address flush dev $WIRED
-			sudo ip route flush dev $WIRED
-			sudo ip link set $WIRED down
+			if ip link show $WIRED | grep -qs "[,]UP[,>]"; then
+				sudo ip address flush dev $WIRED
+				sudo ip route flush dev $WIRED
+				sudo ip link set $WIRED down
+			fi
 			sudo ip link set $WIRELESS up
+			# start iwd and scan
 			while [[ -n $(iwctl station $WIRELESS scan) ]]; do
 				sleep 0.25
 			done
@@ -58,7 +60,9 @@ then
 			exit 0
 			;;
 		"$STARTWIRED")
-			sudo ip link set $WIRELESS down
+			if ip link show $WIRELESS | grep -qs "[,]UP[,>]"; then
+				sudo ip link set $WIRELESS down
+			fi
 			sudo ip link set $WIRED up
 			sudo ip address add $STATICIP/24 brd + dev $WIRED
 			sudo ip route add default via $ROUTE dev $WIRED
