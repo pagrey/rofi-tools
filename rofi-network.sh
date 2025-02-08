@@ -5,11 +5,11 @@ WIRED="enp0s31f6"
 STATICIP="192.168.254.80"
 ROUTE="192.168.254.254"
 SCAN="Scan networks"
-STARTWIRELESS="Wireless ON"
-STOPWIRELESS="Wireless OFF"
+STARTWIRELESS="$WIRELESS"
+STOPWIRELESS="$WIRELESS disable"
 DISCONNECTWIRELESS="Disconnect"
-STARTWIRED="Ethernet ON"
-STOPWIRED="Ethernet OFF"
+STARTWIRED="$WIRED"
+STOPWIRED="$WIRED [UP]"
 IFS=$'\n'
 
 get_known_networks () {
@@ -97,7 +97,7 @@ else
 		SIP=$(ip addr show $WIRED | grep inet | awk '{print $2}')
 		echo -e "\0no-custom\x1ftrue"
 		echo -en "\0prompt\x1fnetwork\n"
-		echo -en "\0message\x1fconnected:$SIP\n"
+		echo -en "\0message\x1f<b>Connected</b>:$SIP\n"
 		echo -en "$STOPWIRED\n"
 		echo -en "$STARTWIRELESS\n"
 		exit 0
