@@ -7,12 +7,12 @@ ROUTE="192.168.254.254"
 SCAN="Scan..."
 STARTWIRELESS="Enable Wifi"
 STOPWIRELESS="Disable Wifi"
-CONFIGWIRELESS="  scan..."
+CONFIGWIRELESS=" scan..."
 DISCONNECTWIRELESS="Disconnect"
 STARTWIRED="Enable LAN"
 STOPWIRED="Disable LAN"
 IFS=$'\n'
-PAD=" "
+PAD="  "
 IL="&#91;"
 IR="&#93;"
 NL="&lt;"
@@ -169,7 +169,7 @@ else
 	echo -e "\0message\x1fSaved wireless networks"
 fi
 
-echo -e "$SCAN\0icon\x1f$ICON_PATH$ICON_SEARCH"
+echo -e "$SCAN\0permanent\x1ftrue\x1fdisplay\x1f$CONFIGWIRELESS\x1ficon\x1f$ICON_PATH$ICON_SEARCH"
 
 CON_STATE=$(iwctl station $WIRELESS show)
 
@@ -197,7 +197,7 @@ while IFS= read -r line; do
 	fi
 done <<< "$WORKING_LIST"
 if [[ "$CON_STATE" =~ " connected" ]]; then
-	echo -e "$DISCONNECTWIRELESS\0nonselectable\x1ffalse\x1fdisplay\x1f$DISCONNECTWIRELESS from $CURR_SSID\x1ficon\x1f$ICON_PATH$ICON_WIFI_OFF"
+	echo -e "$DISCONNECTWIRELESS\0permanent\x1ftrue\x1fnonselectable\x1ffalse\x1fdisplay\x1f$DISCONNECTWIRELESS from $CURR_SSID\x1ficon\x1f$ICON_PATH$ICON_WIFI_OFF"
 fi
-echo -e "$STOPWIRELESS\0display\x1f$STOPWIRELESS $IL$WIRELESS up$IR\x1ficon\x1f$ICON_PATH$ICON_STOP"
+echo -e "$STOPWIRELESS\0permanent\x1ftrue\x1fdisplay\x1f$STOPWIRELESS $IL$WIRELESS up$IR\x1ficon\x1f$ICON_PATH$ICON_STOP"
 
