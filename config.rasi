@@ -1,6 +1,0 @@
-configuration {
- modi: "combi,window,filebrowser,ssh,run,backlight:rofi-backlight.sh,music:rofi-music.sh";
- font: "Terminus 16";
- combi-modi: "window,run";
- }
-@theme "i3"

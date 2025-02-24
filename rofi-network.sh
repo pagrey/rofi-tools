@@ -4,14 +4,20 @@ WIRELESS="wlan0"
 WIRED="enp0s31f6"
 STATICIP="192.168.254.80"
 ROUTE="192.168.254.254"
-SCAN="Search..."
+SCAN="Scan..."
 STARTWIRELESS="Enable Wifi"
 STOPWIRELESS="Disable Wifi"
-CONFIGWIRELESS="Configure Wifi"
+CONFIGWIRELESS="  scan..."
 DISCONNECTWIRELESS="Disconnect"
 STARTWIRED="Enable LAN"
 STOPWIRED="Disable LAN"
 IFS=$'\n'
+PAD=" "
+IL="&#91;"
+IR="&#93;"
+NL="&lt;"
+NR="&gt;"
+NF="not found"
 ICON_PATH="~/.config/rofi/icons/"
 ICON_ETHERNET="settings_ethernet_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
 ICON_WIFI="network_wifi_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
@@ -31,8 +37,8 @@ show_menu () {
 		echo -e "\0no-custom\x1ftrue"
 		echo -e "\0prompt\x1fnetwork"
 		echo -e "\0message\x1f<b>Connected</b>:$SIP"
-		echo -e "$STOPWIRED\0icon\x1f$ICON_PATH$ICON_ETHERNET"
-		echo -e "$STARTWIRELESS\0icon\x1f$ICON_PATH$ICON_RULE"
+		echo -e "$STOPWIRED\0display\x1f$STOPWIRED $IL$WIRED up$IR\x1ficon\x1f$ICON_PATH$ICON_ETHERNET"
+		echo -e "$STARTWIRELESS\0display\x1f$STARTWIRELESS $IL$WIRELESS down$IR\x1ficon\x1f$ICON_PATH$ICON_RULE"
 		exit 0
 	elif ip link show $WIRELESS | grep -qs "[,]UP[,>]"; then
 		# wireless up
@@ -40,15 +46,15 @@ show_menu () {
 		echo -e "\0no-custom\x1ftrue"
 		echo -e "\0prompt\x1fnetwork"
 		echo -e "\0message\x1f<b>Connected</b>:$SIP"
+		echo -e "$STARTWIRED\0display\x1f$STARTWIRED $IL$WIRED down$IR\x1ficon\x1f$ICON_PATH$ICON_RULE"
+		echo -e "$STOPWIRELESS\0display\x1f$STOPWIRELESS $IL$WIRELESS up$IR\x1ficon\x1f$ICON_PATH$ICON_WIFI_OFF"
 		echo -e "$CONFIGWIRELESS\0icon\x1f$ICON_PATH$ICON_WIFI_FIND"
-		echo -e "$STOPWIRELESS\0icon\x1f$ICON_PATH$ICON_WIFI_OFF"
-		echo -e "$STARTWIRED\0icon\x1f$ICON_PATH$ICON_RULE"
 		exit 0
 	else
 		echo -e "\0no-custom\x1ftrue"
 		echo -e "\0prompt\x1fnetwork"
-		echo -e "$STARTWIRED\0icon\x1f$ICON_PATH$ICON_RULE"
-		echo -e "$STARTWIRELESS\0icon\x1f$ICON_PATH$ICON_RULE"
+		echo -e "$STARTWIRED\0display\x1f$STARTWIRED $IL$WIRED down$IR\x1ficon\x1f$ICON_PATH$ICON_RULE"
+		echo -e "$STARTWIRELESS\0display\x1f$STARTWIRELESS $IL$WIRELESS down$IR\x1ficon\x1f$ICON_PATH$ICON_RULE"
 		exit 0
 	fi
 }
@@ -75,6 +81,8 @@ if [[ -n $ROFI_DATA ]]; then
 	iwctl --passphrase="$@" station $WIRELESS connect "$ROFI_DATA"
 	exit 0
 fi
+
+echo -e "\0markup-rows\x1ftrue"
 
 if [ $# -gt 0 ]
 then
@@ -161,7 +169,6 @@ else
 	echo -e "\0message\x1fSaved wireless networks"
 fi
 
-echo -e "\0markup-rows\x1ftrue"
 echo -e "$SCAN\0icon\x1f$ICON_PATH$ICON_SEARCH"
 
 CON_STATE=$(iwctl station $WIRELESS show)
@@ -178,19 +185,19 @@ while IFS= read -r line; do
 	SSID_NAME=$(echo "$line" | sed -e 's/\(\s*psk.*\)//' -e 's/\(\s*open.*\)//')
         if [[ $IW_NETWORKS =~ $SSID_NAME ]]; then
 		if [[ -n "$CURR_SSID"  &&  "$SSID_NAME" = "$CURR_SSID" ]]; then
-			echo -e "<b>${SSID_NAME}</b> &lt;$CURR_IP&gt;\0nonselectable\x1ftrue\x1ficon\x1f$ICON_PATH$ICON_WIFI"
+			echo -e "${SSID_NAME}\0display\x1f$PAD<b>${SSID_NAME}</b> $NL$CURR_IP$NR\x1fnonselectable\x1ftrue\x1ficon\x1f$ICON_PATH$ICON_WIFI"
 			echo -e "\0active\x1f$COUNTER"
 		else
-			echo -e "${SSID_NAME}\0nonselectable\x1ffalse\x1ficon\x1f$ICON_PATH$ICON_RULE"
+			echo -e "${SSID_NAME}\0display\x1f$PAD${SSID_NAME}\x1fnonselectable\x1ffalse\x1ficon\x1f$ICON_PATH$ICON_RULE"
 		fi
 		let COUNTER++
 	else
-		echo -e "${SSID_NAME} &lt;not found&gt;\0nonselectable\x1ftrue\x1ficon\x1f$ICON_PATH$ICON_WIFI_BAD"
+		echo -e "${SSID_NAME}\0display\x1f$PAD${SSID_NAME} $NL$NF$NR\x1fnonselectable\x1ftrue\x1ficon\x1f$ICON_PATH$ICON_WIFI_BAD"
 		let COUNTER++
 	fi
 done <<< "$WORKING_LIST"
 if [[ "$CON_STATE" =~ " connected" ]]; then
 	echo -e "$DISCONNECTWIRELESS\0nonselectable\x1ffalse\x1fdisplay\x1f$DISCONNECTWIRELESS from $CURR_SSID\x1ficon\x1f$ICON_PATH$ICON_WIFI_OFF"
 fi
-echo -e "$STOPWIRELESS\0icon\x1f$ICON_PATH$ICON_STOP"
+echo -e "$STOPWIRELESS\0display\x1f$STOPWIRELESS $IL$WIRELESS up$IR\x1ficon\x1f$ICON_PATH$ICON_STOP"
 
