@@ -2,38 +2,38 @@
 
 set -e
 set -u
+INCREASE="Increase"
+DECREASE="Decrease"
+MAXIMUM="Maximum"
 DEVICE=$(ls /sys/class/backlight)
+ICON_PATH="~/.config/rofi/icons/"
+ICON_UP="keyboard_arrow_up_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
+ICON_DOWN="keyboard_arrow_down_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
+ICON_MAX="brightness_7_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
 
 if [[ -z $DEVICE ]]; then
 	echo "No backlight found!"
 	exit 0
 fi
 
-options=(Decrease Increase Maximum)
-
-declare -A actions
-actions[Decrease]="backlight down"
-actions[Increase]="backlight up"
-actions[Maximum]="backlight 100"
-
 if [ $# -gt 0 ]
 then
-    for entry in "${options[@]}"
-    do
-        if [ "$entry" = "$1" ]
-        then
-            ${actions[$entry]} > /dev/null 2>&1
-        fi
-    done
-    if [[ $1 =~ ^[0-9]+$ ]]; then
-#    if [ "$1" -eq "$1" ] 2> /dev/null; then
+	if [[ $1 =~ ^[0-9]+$ ]]; then
 	    backlight $1 > /dev/null 2>&1
-    fi
+	else
+		case "$1" in
+			"$INCREASE")
+				backlight up > /dev/null 2>&1
+				;;
+			"$DECREASE")
+				backlight down > /dev/null 2>&1
+				;;
+			"$MAXIMUM")
+				backlight 100 > /dev/null 2>&1
+				;;
+		esac
+	fi
 fi
-for entry in "${options[@]}"
-do
-    echo "$entry"
-done
 
 currentlevel=$(< /sys/class/backlight/$DEVICE/brightness)
 maxlevel=$(< /sys/class/backlight/$DEVICE/max_brightness)
@@ -42,6 +42,11 @@ if [ $percent -gt 100 ]; then
 	percent=100
 fi
 
-echo -en "\0prompt\x1fbacklight\n"
-echo -en "\0markup-rows\x1ftrue\n"
-echo -en "\0message\x1f<b>Current level:</b> $percent%\n"
+echo -e "\0prompt\x1fbacklight"
+echo -e "\0markup-rows\x1ftrue"
+echo -e "\0keep-selection\x1ftrue"
+echo -e "\0message\x1f<b>Current level:</b> $percent%"
+
+echo -e "$INCREASE\0icon\x1f$ICON_PATH$ICON_UP"
+echo -e "$DECREASE\0icon\x1f$ICON_PATH$ICON_DOWN"
+echo -e "$MAXIMUM\0icon\x1f$ICON_PATH$ICON_MAX"

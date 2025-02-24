@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
 DISCONNECT="Disconnect"
-UP="Volume Up"
-DOWN="Volume Down"
-MAX="Volume Max"
-MUTE="Volume Mute"
 stations=(Cinemix VeniceClassical RadioDismuke 1920sRadioNetwork 1940sRadio 1940sUKRadio BigBlueSwing ElectroLounge LoungeRadio)
+ICON_PATH="~/.config/rofi/icons/"
+ICON_CLOSE="close_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
+ICON_CAST="music_cast_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
+ICON_RULE="horizontal_rule_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
+ICON_OFF="music_off_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
 
 declare -A url
 url[RadioDismuke]="http://stream1.early1900s.org:8080"
@@ -28,18 +29,6 @@ then
 			unset nowplaying
 			exit 0
                         ;;
-                "$UP")
-			amixer -q set Master 5+ > /dev/null 2>&1
-                        ;;
-                "$DOWN")
-			amixer -q set Master 5- > /dev/null 2>&1
-                        ;;
-                "$MAX")
-			amixer -q set Master 100 > /dev/null 2>&1
-                        ;;
-                "$MUTE")
-			amixer -q set Master toggle > /dev/null 2>&1
-                        ;;
                 *)
 			killall ffplay > /dev/null 2>&1
 			coproc( ffplay -loglevel 8 -nodisp ${url[$1]} > /dev/null 2>&1 )
@@ -49,12 +38,8 @@ then
         esac
 fi
 
-volume=$(amixer get Master | sed -e '1,4d' -e 's/^.*[0-9\] \[//' -e 's/\].*//')
-mutedisabled=$(amixer get Master | sed -e '1,4d' -e 's/^.*\[//' -e 's/\]//')
-
-echo -en "\0message\x1f<b>Current volume:</b> $volume\n"
 if [[ -n $nowplaying ]]; then
-    	echo -en "$DISCONNECT\0permanent\x1true\n"
+    	echo -e "$DISCONNECT\0permanent\x1ftrue\x1ficon\x1f$ICON_PATH$ICON_OFF"
 fi
 	
 COUNTER=1
@@ -63,26 +48,15 @@ do
     if [[ $nowplaying = ${url[$entry]} ]]
     then
 	stationplaying=$entry
-	echo -en "\0active\x1f$COUNTER\n"
-        echo -en "$entry\0nonselectable\x1ftrue\n"
-    	echo -en "\0markup-rows\x1ftrue\n"
-        echo -en "\0message\x1f<b>Current volume:</b> $volume <b>Current station:</b> $stationplaying\n"
+	echo -e "\0active\x1f$COUNTER"
+        echo -e "$entry\0nonselectable\x1ftrue\x1ficon\x1f$ICON_PATH$ICON_CAST"
+    	echo -e "\0markup-rows\x1ftrue"
+        echo -e "\0message\x1f<b>Current station:</b> $stationplaying"
     else
-    	echo -en "$entry\n"
+    	echo -e "$entry\0icon\x1f$ICON_PATH$ICON_RULE"
     fi
     let COUNTER++
 done
 
-echo $UP
-echo $DOWN
-echo $MAX
-let COUNTER+=3
-if [[ $mutedisabled = "off" ]]; then
-	echo -en "\0urgent\x1f$COUNTER\n"
-	echo $MUTE
-else
-	echo $MUTE
-fi
-
-echo -e "\0no-custom\x1ftrue\n"
-echo -en "\0prompt\x1fradio\n"
+echo -e "\0no-custom\x1ftrue"
+echo -e "\0prompt\x1fradio"

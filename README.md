@@ -8,6 +8,7 @@ These scripts are implemented in rofi mode, not as a stand-alone executable that
 * Basic Power Manager
 * Backlight Control
 * Internet Radio using ffplay
+* Volume using alsa/amixer
 * Network Manager using iwd
 
 ## Install
@@ -19,12 +20,12 @@ You can use the script directly from their directory without needing to install 
 A simple example showing how to launch the power menu:
 
 ```
-rofi -show "w" -modes "w:rofi-pwr.sh"
+rofi -show "w" -modes "w:rofi-power.sh"
 ```
 If you didn't install the script in `PATH`, you need to give the path to the
 script. If you're running rofi in the directory where the script is, you can
 run it as follows:
 
 ```
-rofi -show "w" -modes "w:./rofi-pwr.sh"
+rofi -show "w" -modes "w:./rofi-power.sh"
 ```
