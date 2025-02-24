@@ -13,20 +13,20 @@ ICON_MAX="volume_up_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
 if [ $# -gt 0 ]
 then
 	if [[ $1 =~ ^[0-9]+$ ]]; then
-		amixer -Mq set Master $1% > /dev/null 2>&1
+		coproc ( amixer -Mq set Master $1% > /dev/null 2>&1 )
 	else
 		case "$1" in
 			"$UP")
-				amixer -Mq set Master 5%+ > /dev/null 2>&1
+				coproc ( amixer -Mq set Master 5%+ > /dev/null 2>&1 )
 				;;
 			"$DOWN")
-				amixer -Mq set Master 5%- > /dev/null 2>&1
+				coproc ( amixer -Mq set Master 5%- > /dev/null 2>&1 )
 				;;
 			"$MAX")
-				amixer -Mq set Master 100% > /dev/null 2>&1
+				coproc ( amixer -Mq set Master 100% > /dev/null 2>&1 )
 				;;
 			"$MUTE")
-				amixer -Mq set Master toggle > /dev/null 2>&1
+				coproc ( amixer -Mq set Master toggle > /dev/null 2>&1 )
 				;;
 		esac
 	fi

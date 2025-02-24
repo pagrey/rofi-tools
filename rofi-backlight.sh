@@ -19,17 +19,17 @@ fi
 if [ $# -gt 0 ]
 then
 	if [[ $1 =~ ^[0-9]+$ ]]; then
-	    backlight $1 > /dev/null 2>&1
+	    coproc ( backlight $1 > /dev/null 2>&1 )
 	else
 		case "$1" in
 			"$INCREASE")
-				backlight up > /dev/null 2>&1
+				coproc ( backlight up > /dev/null 2>&1 )
 				;;
 			"$DECREASE")
-				backlight down > /dev/null 2>&1
+				coproc ( backlight down > /dev/null 2>&1 )
 				;;
 			"$MAXIMUM")
-				backlight 100 > /dev/null 2>&1
+				coproc ( backlight 100 > /dev/null 2>&1 )
 				;;
 		esac
 	fi

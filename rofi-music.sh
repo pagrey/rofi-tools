@@ -7,6 +7,7 @@ ICON_CLOSE="close_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
 ICON_CAST="music_cast_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
 ICON_RULE="horizontal_rule_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
 ICON_OFF="music_off_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
+PAD=" "
 
 declare -A url
 url[RadioDismuke]="http://stream1.early1900s.org:8080"
@@ -37,6 +38,7 @@ then
                         ;;
         esac
 fi
+echo -e "\0markup-rows\x1ftrue"
 
 if [[ -n $nowplaying ]]; then
     	echo -e "$DISCONNECT\0permanent\x1ftrue\x1ficon\x1f$ICON_PATH$ICON_OFF"
@@ -49,11 +51,10 @@ do
     then
 	stationplaying=$entry
 	echo -e "\0active\x1f$COUNTER"
-        echo -e "$entry\0nonselectable\x1ftrue\x1ficon\x1f$ICON_PATH$ICON_CAST"
-    	echo -e "\0markup-rows\x1ftrue"
+        echo -e "$entry\0display\x1f$PAD$entry\x1fnonselectable\x1ftrue\x1ficon\x1f$ICON_PATH$ICON_CAST"
         echo -e "\0message\x1f<b>Current station:</b> $stationplaying"
     else
-    	echo -e "$entry\0icon\x1f$ICON_PATH$ICON_RULE"
+    	echo -e "$entry\0display\x1f$PAD$entry\x1ficon\x1f$ICON_PATH$ICON_RULE"
     fi
     let COUNTER++
 done

@@ -2,9 +2,9 @@
 
 set -e
 
-I3EXIT="Log off"
+I3EXIT="Logout"
 REBOOT="Reboot"
-POWEROFF="Power off"
+POWEROFF="Poweroff"
 CANCEL="Cancel"
 YES="Yes"
 ICON_PATH="~/.config/rofi/icons/"
@@ -19,10 +19,10 @@ if [[ -n $ROFI_DATA ]]; then
 		loginctl terminate-session ${XDG_SESSION_ID-}
 		exit 0
 	else
-		unset ROFI_DATA
+		exit 0
+#		unset ROFI_DATA
 	fi
 fi
-
 
 if [ $# -gt 0 ]
 then
@@ -34,7 +34,7 @@ then
                 "$REBOOT")
 			echo -e "\0data\x1freboot"
 			echo -e "\0no-custom\x1ftrue"
-			echo -e "\0urgent\x1f0"
+#			echo -e "\0urgent\x1f0"
 			echo -e "\0prompt\x1fconfirmation"
 			echo -e "\0message\x1fAre you sure?"
 			echo -e "$YES\0icon\x1f$ICON_PATH$ICON_CHECK"
@@ -44,7 +44,7 @@ then
                 "$POWEROFF")
 			echo -e "\0data\x1fpoweroff"
 			echo -e "\0no-custom\x1ftrue"
-			echo -e "\0urgent\x1f0"
+#			echo -e "\0urgent\x1f0"
 			echo -e "\0prompt\x1fconfirmation"
 			echo -e "\0message\x1fAre you sure?"
 			echo -e "$YES\0icon\x1f$ICON_PATH$ICON_CHECK"
