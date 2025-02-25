@@ -2,7 +2,8 @@
 
 set -e
 
-I3EXIT="Logout"
+I3EXIT="Exit i3"
+LOGOUT="Logout"
 REBOOT="Reboot"
 POWEROFF="Poweroff"
 CANCEL="Cancel"
@@ -16,23 +17,37 @@ ICON_CLOSE="close_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
 
 if [[ -n $ROFI_DATA ]]; then
 	if [[ "$1" = "$YES" ]]; then 
-		loginctl terminate-session ${XDG_SESSION_ID-}
-		exit 0
+		case "$ROFI_DATA" in
+			"$REBOOT")
+				reboot
+				exit 0
+				;;
+			"$POWEROFF")
+				poweroff
+				exit 0
+				;;
+			*)
+				exit 0
+				;;
+		esac
 	else
-		exit 0
-#		unset ROFI_DATA
+		unset ROFI_DATA
 	fi
 fi
 
 if [ $# -gt 0 ]
 then
         case "$1" in
+		"$LOGOUT")
+			coproc ( loginctl kill-session "${XDG_SESSION_ID-}"  > /dev/null  2>&1 )
+			exit 0
+			;;
                 "$I3EXIT")
 			coproc ( i3-msg exit  > /dev/null  2>&1 )
 			exit 0
                         ;;
                 "$REBOOT")
-			echo -e "\0data\x1freboot"
+			echo -e "\0data\x1f$REBOOT"
 			echo -e "\0no-custom\x1ftrue"
 #			echo -e "\0urgent\x1f0"
 			echo -e "\0prompt\x1fconfirmation"
@@ -42,7 +57,7 @@ then
 			exit 0
                         ;;
                 "$POWEROFF")
-			echo -e "\0data\x1fpoweroff"
+			echo -e "\0data\x1f$POWEROFF"
 			echo -e "\0no-custom\x1ftrue"
 #			echo -e "\0urgent\x1f0"
 			echo -e "\0prompt\x1fconfirmation"
@@ -51,9 +66,6 @@ then
 			echo -e "$CANCEL\0icon\x1f$ICON_PATH$ICON_CLOSE"
 			exit 0
                         ;;
-		"$CANCEL")
-			echo -e "\0message\x1f"
-			;;
                 *)
 			exit 0
                         ;;
@@ -64,5 +76,6 @@ echo -e "\0no-custom\x1ftrue"
 echo -e "\0prompt\x1fpower"
 echo -e "\0markup-rows\x1ftrue"
 echo -e "$I3EXIT\0icon\x1f$ICON_PATH$ICON_LOGOUT"
+echo -e "$LOGOUT\0icon\x1f$ICON_PATH$ICON_LOGOUT"
 echo -e "$REBOOT\0icon\x1f$ICON_PATH$ICON_REBOOT"
 echo -e "$POWEROFF\0icon\x1f$ICON_PATH$ICON_POWER"
