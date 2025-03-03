@@ -9,7 +9,7 @@ These scripts are implemented in rofi mode, not as a stand-alone executable that
 * Backlight Control
 * Internet Radio using ffplay
 * Volume using alsa/amixer
-* Network Manager using iwd
+* Network Manager using iwd/iproute2
 
 ## Install
 
