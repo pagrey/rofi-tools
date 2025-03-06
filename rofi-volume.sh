@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
-UP="Volume Up"
-DOWN="Volume Down"
-MAX="Volume Max"
-MUTE="Volume Mute"
+UP="Increase"
+DOWN="Decrease"
+MAX="Maximum"
+MUTE="Mute"
+MESSAGE="Output volume:"
+TAB=" "
 ICON_PATH="~/.config/rofi/icons/"
 ICON_UP="volume_down_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
 ICON_DOWN="volume_mute_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
@@ -35,18 +37,18 @@ fi
 volume=$(amixer -M get Master | sed -e '1,4d' -e 's/^.*[0-9\] \[//' -e 's/\].*//')
 mutedisabled=$(amixer get Master | sed -e '1,4d' -e 's/^.*\[//' -e 's/\]//')
 
-echo -e "\0message\x1f<b>Current volume:</b> $volume"
+echo -e "\0message\x1f<b>$MESSAGE</b> $volume"
 #echo -e "\0no-custom\x1ftrue"
 echo -e "\0prompt\x1fvolume"
 echo -e "\0keep-selection\x1ftrue"
 	
-echo -e "$UP\0icon\x1f$ICON_PATH$ICON_UP"
-echo -e "$DOWN\0icon\x1f$ICON_PATH$ICON_DOWN"
-echo  -e "$MAX\0icon\x1f$ICON_PATH$ICON_MAX"
+echo -e "$UP\0message\x1f$TAB$UP\xificon\x1f$ICON_PATH$ICON_UP"
+echo -e "$DOWN\0message\x1f$TAB$DOWN\x1ficon\x1f$ICON_PATH$ICON_DOWN"
+echo -e "$MAX\0message\x1f$TAB$MAX\x1ficon\x1f$ICON_PATH$ICON_MAX"
 let COUNTER+=3
 if [[ $mutedisabled = "off" ]]; then
 	echo -e "\0urgent\x1f$COUNTER"
-	echo  -e "$MUTE\0icon\x1f$ICON_PATH$ICON_MUTE"
+	echo  -e "$MUTE\0message\x1f$TAB$MUTE\x1ficon\x1f$ICON_PATH$ICON_MUTE"
 else
-	echo  -e "$MUTE\0icon\x1f$ICON_PATH$ICON_MUTE"
+	echo  -e "$MUTE\0message\x1f$TAB$MESSAGE\x1ficon\x1f$ICON_PATH$ICON_MUTE"
 fi
