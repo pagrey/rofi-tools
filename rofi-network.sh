@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
-WIRELESS="wlan0"
-WIRED="enp0s31f6"
 STATICIP="192.168.254.80"
 ROUTE="192.168.254.254"
+
 SCAN="Scan..."
 STARTWIRELESS="Enable Wifi"
 STOPWIRELESS="Disable Wifi"
@@ -18,6 +17,22 @@ IR="&#93;"
 NL="&lt;"
 NR="&gt;"
 NF="not found"
+
+WIRELESS=$(find /sys/class/net/ -name "wl*" -printf %f  -quit)
+WIRED=$(find /sys/class/net/ -name "en*" -printf %f  -quit)
+
+if [[ -z $WIRELESS ]]; then
+	echo "Wireless network device not found!"
+	exit 0
+fi
+if [[ -z $WIRED ]]; then
+	echo "Wired network device not found!"
+	exit 0
+fi
+if ! command -v iwctl 2>&1 >/dev/null; then
+	echo "iwd not found!"
+	exit 0
+fi
 
 show_menu () {
 	if ip link show $WIRED | grep -qs "[<,]UP[,>]"; then
@@ -73,8 +88,7 @@ fi
 
 echo -e "\0markup-rows\x1ftrue"
 
-if [ $# -gt 0 ]
-then
+if [[ $# -gt 0 ]]; then
         case "$1" in
                 "$DISCONNECTWIRELESS")
                         iwctl station $WIRELESS disconnect

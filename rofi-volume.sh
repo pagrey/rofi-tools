@@ -7,8 +7,12 @@ MUTE="Mute"
 MESSAGE="Output volume:"
 TAB=" "
 
-if [ $# -gt 0 ]
-then
+if ! command -v amixer 2>&1 >/dev/null; then
+    echo "No audio control (amixer) found!"
+    exit 0
+fi
+
+if [[ $# -gt 0 ]]; then
 	if [[ $1 =~ ^[0-9]+$ ]]; then
 		coproc ( amixer -Mq set Master $1% > /dev/null 2>&1 )
 	else
@@ -33,7 +37,6 @@ volume=$(amixer -M get Master | sed -e '1,4d' -e 's/^.*[0-9\] \[//' -e 's/\].*//
 mutedisabled=$(amixer get Master | sed -e '1,4d' -e 's/^.*\[//' -e 's/\]//')
 
 echo -e "\0message\x1f<b>$MESSAGE</b> $volume"
-#echo -e "\0no-custom\x1ftrue"
 echo -e "\0prompt\x1fvolume"
 echo -e "\0keep-selection\x1ftrue"
 	

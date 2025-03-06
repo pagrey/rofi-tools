@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set -e
 
 I3EXIT="Exit i3"
@@ -29,8 +28,7 @@ if [[ -n $ROFI_DATA ]]; then
 	fi
 fi
 
-if [ $# -gt 0 ]
-then
+if [[ $# -gt 0 ]]; then
         case "$1" in
 		"$LOGOUT")
 			coproc ( loginctl kill-session "${XDG_SESSION_ID-}"  > /dev/null  2>&1 )
@@ -43,7 +41,6 @@ then
                 "$REBOOT")
 			echo -e "\0data\x1f$REBOOT"
 			echo -e "\0no-custom\x1ftrue"
-#			echo -e "\0urgent\x1f0"
 			echo -e "\0prompt\x1fconfirmation"
 			echo -e "\0message\x1fAre you sure?"
 			echo -e "$YES"
@@ -53,7 +50,6 @@ then
                 "$POWEROFF")
 			echo -e "\0data\x1f$POWEROFF"
 			echo -e "\0no-custom\x1ftrue"
-#			echo -e "\0urgent\x1f0"
 			echo -e "\0prompt\x1fconfirmation"
 			echo -e "\0message\x1fAre you sure?"
 			echo -e "$YES"

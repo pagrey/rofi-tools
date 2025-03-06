@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+if ! command -v ffplay 2>&1 >/dev/null; then
+    echo "ffplay not found!"
+    exit 0
+fi
+
 DISCONNECT="Disconnect"
 stations=(Cinemix VeniceClassical RadioDismuke 1920sRadioNetwork 1940sRadio 1940sUKRadio BigBlueSwing ElectroLounge LoungeRadio)
 PAD=" "
@@ -17,8 +22,7 @@ url[Cinemix]="http://51.81.46.118:1190"
 
 nowplaying=$(ps hw -C ffplay -o args= | sed -e 's/^.*nodisp //')
 
-if [ $# -gt 0 ]
-then
+if [[ $# -gt 0 ]]; then
         case "$1" in
                 "$DISCONNECT")
 			killall ffplay > /dev/null 2>&1
@@ -42,8 +46,7 @@ fi
 COUNTER=1
 for entry in "${stations[@]}"
 do
-    if [[ $nowplaying = ${url[$entry]} ]]
-    then
+    if [[ $nowplaying = ${url[$entry]} ]]; then
 	stationplaying=$entry
 	echo -e "\0active\x1f$COUNTER"
         echo -e "$entry\0display\x1f$PAD$entry\x1fnonselectable\x1ftrue"

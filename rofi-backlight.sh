@@ -1,31 +1,34 @@
 #!/usr/bin/env bash
+set -eu
 
-set -e
-set -u
 INCREASE="Increase"
 DECREASE="Decrease"
 MAXIMUM="Maximum"
 DEVICE=$(ls /sys/class/backlight)
 
 if [[ -z $DEVICE ]]; then
-	echo "No backlight found!"
+	echo "backlight device not found!"
 	exit 0
 fi
 
-if [ $# -gt 0 ]
-then
+if ! command -v backlight 2>&1 >/dev/null; then
+    echo "backlight not found!"
+    exit 0
+fi
+
+if [[ $# -gt 0 ]]; then
 	if [[ $1 =~ ^[0-9]+$ ]]; then
-	    coproc ( backlight $1 > /dev/null 2>&1 )
+	    backlight $1 > /dev/null 2>&1
 	else
 		case "$1" in
 			"$INCREASE")
-				coproc ( backlight up > /dev/null 2>&1 )
+				backlight up > /dev/null 2>&1
 				;;
 			"$DECREASE")
-				coproc ( backlight down > /dev/null 2>&1 )
+				backlight down > /dev/null 2>&1
 				;;
 			"$MAXIMUM")
-				coproc ( backlight 100 > /dev/null 2>&1 )
+				backlight 100 > /dev/null 2>&1
 				;;
 		esac
 	fi
@@ -34,7 +37,7 @@ fi
 currentlevel=$(< /sys/class/backlight/$DEVICE/brightness)
 maxlevel=$(< /sys/class/backlight/$DEVICE/max_brightness)
 percent=$(($currentlevel * 101 / $maxlevel))
-if [ $percent -gt 100 ]; then
+if [[ $percent -gt 100 ]]; then
 	percent=100
 fi
 
