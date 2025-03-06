@@ -18,17 +18,6 @@ IR="&#93;"
 NL="&lt;"
 NR="&gt;"
 NF="not found"
-ICON_PATH="~/.config/rofi/icons/"
-ICON_ETHERNET="settings_ethernet_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
-ICON_WIFI="network_wifi_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
-ICON_WIFI_OFF="signal_wifi_off_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
-ICON_WIFI_BAD="signal_wifi_bad_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
-ICON_WIFI_NULL="signal_wifi_statusbar_null_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
-ICON_WIFI_FIND="wifi_find_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
-ICON_STOP="close_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
-ICON_RULE="horizontal_rule_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
-ICON_SEARCH="search_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
-ICON_CLOSE="close_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
 
 show_menu () {
 	if ip link show $WIRED | grep -qs "[<,]UP[,>]"; then
@@ -37,8 +26,8 @@ show_menu () {
 		echo -e "\0no-custom\x1ftrue"
 		echo -e "\0prompt\x1fnetwork"
 		echo -e "\0message\x1f<b>Connected</b>:$SIP"
-		echo -e "$STOPWIRED\0display\x1f$STOPWIRED $IL$WIRED up$IR\x1ficon\x1f$ICON_PATH$ICON_ETHERNET"
-		echo -e "$STARTWIRELESS\0display\x1f$STARTWIRELESS $IL$WIRELESS down$IR\x1ficon\x1f$ICON_PATH$ICON_RULE"
+		echo -e "$STOPWIRED\0display\x1f$STOPWIRED $IL$WIRED up$IR"
+		echo -e "$STARTWIRELESS\0display\x1f$STARTWIRELESS $IL$WIRELESS down$IR"
 		exit 0
 	elif ip link show $WIRELESS | grep -qs "[,]UP[,>]"; then
 		# wireless up
@@ -46,15 +35,15 @@ show_menu () {
 		echo -e "\0no-custom\x1ftrue"
 		echo -e "\0prompt\x1fnetwork"
 		echo -e "\0message\x1f<b>Connected</b>:$SIP"
-		echo -e "$STARTWIRED\0display\x1f$STARTWIRED $IL$WIRED down$IR\x1ficon\x1f$ICON_PATH$ICON_RULE"
-		echo -e "$STOPWIRELESS\0display\x1f$STOPWIRELESS $IL$WIRELESS up$IR\x1ficon\x1f$ICON_PATH$ICON_WIFI_OFF"
-		echo -e "$CONFIGWIRELESS\0icon\x1f$ICON_PATH$ICON_WIFI_FIND"
+		echo -e "$STARTWIRED\0display\x1f$STARTWIRED $IL$WIRED down$IR"
+		echo -e "$STOPWIRELESS\0display\x1f$STOPWIRELESS $IL$WIRELESS up$IR"
+		echo -e "$CONFIGWIRELESS"
 		exit 0
 	else
 		echo -e "\0no-custom\x1ftrue"
 		echo -e "\0prompt\x1fnetwork"
-		echo -e "$STARTWIRED\0display\x1f$STARTWIRED $IL$WIRED down$IR\x1ficon\x1f$ICON_PATH$ICON_RULE"
-		echo -e "$STARTWIRELESS\0display\x1f$STARTWIRELESS $IL$WIRELESS down$IR\x1ficon\x1f$ICON_PATH$ICON_RULE"
+		echo -e "$STARTWIRED\0display\x1f$STARTWIRED $IL$WIRED down$IR"
+		echo -e "$STARTWIRELESS\0display\x1f$STARTWIRELESS $IL$WIRELESS down$IR"
 		exit 0
 	fi
 }
@@ -169,7 +158,7 @@ else
 	echo -e "\0message\x1fSaved wireless networks"
 fi
 
-echo -e "$SCAN\0permanent\x1ftrue\x1fdisplay\x1f$CONFIGWIRELESS\x1ficon\x1f$ICON_PATH$ICON_SEARCH"
+echo -e "$SCAN\0permanent\x1ftrue\x1fdisplay\x1f$CONFIGWIRELESS"
 
 CON_STATE=$(iwctl station $WIRELESS show)
 
@@ -185,19 +174,19 @@ while IFS= read -r line; do
 	SSID_NAME=$(echo "$line" | sed -e 's/\(\s*psk.*\)//' -e 's/\(\s*open.*\)//')
         if [[ $IW_NETWORKS =~ $SSID_NAME ]]; then
 		if [[ -n "$CURR_SSID"  &&  "$SSID_NAME" = "$CURR_SSID" ]]; then
-			echo -e "${SSID_NAME}\0display\x1f$PAD<b>${SSID_NAME}</b> $NL$CURR_IP$NR\x1fnonselectable\x1ftrue\x1ficon\x1f$ICON_PATH$ICON_WIFI"
+			echo -e "${SSID_NAME}\0display\x1f$PAD<b>${SSID_NAME}</b> $NL$CURR_IP$NR\x1fnonselectable\x1ftrue"
 			echo -e "\0active\x1f$COUNTER"
 		else
-			echo -e "${SSID_NAME}\0display\x1f$PAD${SSID_NAME}\x1fnonselectable\x1ffalse\x1ficon\x1f$ICON_PATH$ICON_RULE"
+			echo -e "${SSID_NAME}\0display\x1f$PAD${SSID_NAME}\x1fnonselectable\x1ffalse"
 		fi
 		let COUNTER++
 	else
-		echo -e "${SSID_NAME}\0display\x1f$PAD${SSID_NAME} $NL$NF$NR\x1fnonselectable\x1ftrue\x1ficon\x1f$ICON_PATH$ICON_WIFI_BAD"
+		echo -e "${SSID_NAME}\0display\x1f$PAD${SSID_NAME} $NL$NF$NR\x1fnonselectable\x1ftrue"
 		let COUNTER++
 	fi
 done <<< "$WORKING_LIST"
 if [[ "$CON_STATE" =~ " connected" ]]; then
-	echo -e "$DISCONNECTWIRELESS\0permanent\x1ftrue\x1fnonselectable\x1ffalse\x1fdisplay\x1f$DISCONNECTWIRELESS from $CURR_SSID\x1ficon\x1f$ICON_PATH$ICON_WIFI_OFF"
+	echo -e "$DISCONNECTWIRELESS\0permanent\x1ftrue\x1fnonselectable\x1ffalse\x1fdisplay\x1f$DISCONNECTWIRELESS from $CURR_SSID"
 fi
-echo -e "$STOPWIRELESS\0permanent\x1ftrue\x1fdisplay\x1f$STOPWIRELESS $IL$WIRELESS up$IR\x1ficon\x1f$ICON_PATH$ICON_STOP"
+echo -e "$STOPWIRELESS\0permanent\x1ftrue\x1fdisplay\x1f$STOPWIRELESS $IL$WIRELESS up$IR"
 

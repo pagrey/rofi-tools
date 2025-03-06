@@ -8,12 +8,6 @@ REBOOT="Reboot"
 POWEROFF="Poweroff"
 CANCEL="Cancel"
 YES="Yes"
-ICON_PATH="~/.config/rofi/icons/"
-ICON_LOGOUT="logout_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
-ICON_REBOOT="refresh_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
-ICON_POWER="power_settings_new_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
-ICON_CHECK="check_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
-ICON_CLOSE="close_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
 
 if [[ -n $ROFI_DATA ]]; then
 	if [[ "$1" = "$YES" ]]; then 
@@ -52,8 +46,8 @@ then
 #			echo -e "\0urgent\x1f0"
 			echo -e "\0prompt\x1fconfirmation"
 			echo -e "\0message\x1fAre you sure?"
-			echo -e "$YES\0icon\x1f$ICON_PATH$ICON_CHECK"
-			echo -e "$CANCEL\0icon\x1f$ICON_PATH$ICON_CLOSE"
+			echo -e "$YES"
+			echo -e "$CANCEL"
 			exit 0
                         ;;
                 "$POWEROFF")
@@ -62,8 +56,8 @@ then
 #			echo -e "\0urgent\x1f0"
 			echo -e "\0prompt\x1fconfirmation"
 			echo -e "\0message\x1fAre you sure?"
-			echo -e "$YES\0icon\x1f$ICON_PATH$ICON_CHECK"
-			echo -e "$CANCEL\0icon\x1f$ICON_PATH$ICON_CLOSE"
+			echo -e "$YES"
+			echo -e "$CANCEL"
 			exit 0
                         ;;
                 *)
@@ -75,7 +69,7 @@ fi
 echo -e "\0no-custom\x1ftrue"
 echo -e "\0prompt\x1fpower"
 echo -e "\0markup-rows\x1ftrue"
-echo -e "$I3EXIT\0icon\x1f$ICON_PATH$ICON_LOGOUT"
-echo -e "$LOGOUT\0icon\x1f$ICON_PATH$ICON_LOGOUT"
-echo -e "$REBOOT\0icon\x1f$ICON_PATH$ICON_REBOOT"
-echo -e "$POWEROFF\0icon\x1f$ICON_PATH$ICON_POWER"
+echo -e "$I3EXIT"
+echo -e "$LOGOUT"
+echo -e "$REBOOT"
+echo -e "$POWEROFF"

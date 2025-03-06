@@ -6,10 +6,6 @@ INCREASE="Increase"
 DECREASE="Decrease"
 MAXIMUM="Maximum"
 DEVICE=$(ls /sys/class/backlight)
-ICON_PATH="~/.config/rofi/icons/"
-ICON_UP="keyboard_arrow_up_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
-ICON_DOWN="keyboard_arrow_down_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
-ICON_MAX="brightness_7_18dp_FFFFFF_FILL0_wght400_GRAD0_opsz20.svg"
 
 if [[ -z $DEVICE ]]; then
 	echo "No backlight found!"
@@ -47,6 +43,6 @@ echo -e "\0markup-rows\x1ftrue"
 echo -e "\0keep-selection\x1ftrue"
 echo -e "\0message\x1f<b>Current level:</b> $percent%"
 
-echo -e "$INCREASE\0icon\x1f$ICON_PATH$ICON_UP"
-echo -e "$DECREASE\0icon\x1f$ICON_PATH$ICON_DOWN"
-echo -e "$MAXIMUM\0icon\x1f$ICON_PATH$ICON_MAX"
+echo -e "$INCREASE"
+echo -e "$DECREASE"
+echo -e "$MAXIMUM"
