@@ -14,20 +14,20 @@ fi
 
 if [[ $# -gt 0 ]]; then
 	if [[ $1 =~ ^[0-9]+$ ]]; then
-		coproc ( amixer -Mq set Master $1% > /dev/null 2>&1 )
+		amixer -Mq set Master $1% > /dev/null 2>&1
 	else
 		case "$1" in
 			"$UP")
-				coproc ( amixer -Mq set Master 5%+ > /dev/null 2>&1 )
+				amixer -Mq set Master 5%+ > /dev/null 2>&1
 				;;
 			"$DOWN")
-				coproc ( amixer -Mq set Master 5%- > /dev/null 2>&1 )
+				amixer -Mq set Master 5%- > /dev/null 2>&1
 				;;
 			"$MAX")
-				coproc ( amixer -Mq set Master 100% > /dev/null 2>&1 )
+				amixer -Mq set Master 100% > /dev/null 2>&1
 				;;
 			"$MUTE")
-				coproc ( amixer -Mq set Master toggle > /dev/null 2>&1 )
+				amixer -Mq set Master toggle > /dev/null 2>&1
 				;;
 		esac
 	fi
