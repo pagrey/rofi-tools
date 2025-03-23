@@ -59,3 +59,11 @@ done
 
 echo -e "\0no-custom\x1ftrue"
 echo -e "\0prompt\x1fradio"
+if command -v amixer 2>&1 >/dev/null; then
+    volume=$(amixer -M get Master | sed -e '1,4d' -e 's/^.*[0-9\] \[//' -e 's/\].*//')
+    if [[ -n $nowplaying ]]; then
+        echo -e "\0message\x1f $stationplaying playing, current volume: $volume"
+    else
+        echo -e "\0message\x1f Nothing playing, current volume: $volume"
+    fi
+fi
