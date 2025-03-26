@@ -5,24 +5,13 @@ if ! command -v ffplay 2>&1 >/dev/null; then
     exit 0
 fi
 
-declare -rA url=(["Radio Dismuke"]="http://stream1.early1900s.org:8080"
-["1920s Radio Network"]="http://208.85.242.72:8398"
-["1940s UK Radio"]="http://91.121.134.23:8100"
-["Big Blue Swing"]="http://209.236.126.18:8002"
-["Electro Lounge"]="https://electrolounge.stream.laut.fm/electrolounge?pl=pls"
-["Lounge Radio"]="http://nl1.streamhosting.ch:80"
-["Venice Classical"]="http://116.202.241.212:8010"
-["Instrumental Hits Radio"]="https://panel.retrolandigital.com:8130/listen"
-["Bluegrass Country"]="https://ice24.securenetsystems.net/WAMU"
-["The Bluegrass Jamboree"]="https://s2.radio.co/sf0dcfa39a/listen"
-["Traditional Classic Country"]="http://207.244.126.86:7713/stream"
-["Cinemix"]="http://51.81.46.118:1190")
-
 FAVORITE="Cinemix"
+PLAYLIST="/home/pagrey/Music/playlist/playlist.yml"
 
 DISCONNECT="Disconnect"
 PAD=" "
 HTTP="//"
+YAML=": "
 SHORTLENGTH=25
 
 print_row(){
@@ -41,6 +30,13 @@ print_row(){
 	echo -e "$entry\0display\x1f$PAD$entry <span color='#555'> $shorturl</span>"
     fi
 }
+
+declare -A url
+
+while IFS= read -r line; do
+    i=$(expr index "$line" $YAML)
+    url["${line:0:$i-1}"]="${line:$i+2:${#line}-$i-3}"
+done < $PLAYLIST
 
 nowplaying=$(ps hw -C ffplay -o args= | sed -e 's/^.*nodisp //')
 
