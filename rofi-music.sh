@@ -6,19 +6,19 @@ if ! command -v ffplay 2>&1 >/dev/null; then
 fi
 
 DISCONNECT="Disconnect"
-stations=(Cinemix VeniceClassical RadioDismuke 1920sRadioNetwork 1940sRadio 1940sUKRadio BigBlueSwing ElectroLounge LoungeRadio)
 PAD=" "
+FAVORITE="Cinemix"
 
-declare -A url
-url[RadioDismuke]="http://stream1.early1900s.org:8080"
-url[1920sRadioNetwork]="http://208.85.242.72:8398"
-url[1940sRadio]="http://199.189.111.28:8012"
-url[1940sUKRadio]="http://91.121.134.23:8100"
-url[BigBlueSwing]="http://209.236.126.18:8002"
-url[ElectroLounge]="https://electrolounge.stream.laut.fm/electrolounge?pl=pls&t302=2024-08-26_23-57-55&uuid=ba9e3f02-429f-4659-9ae5-acf6715fb367"
-url[LoungeRadio]="http://nl1.streamhosting.ch:80"
-url[VeniceClassical]="http://116.202.241.212:8010"
-url[Cinemix]="http://51.81.46.118:1190"
+declare -rA url=([RadioDismuke]="http://stream1.early1900s.org:8080"
+[1920sRadioNetwork]="http://208.85.242.72:8398"
+[1940sRadio]="http://199.189.111.28:8012"
+[1940sUKRadio]="http://91.121.134.23:8100"
+[BigBlueSwing]="http://209.236.126.18:8002"
+[ElectroLounge]="https://electrolounge.stream.laut.fm/electrolounge?pl=pls&t302=2024-08-26_23-57-55&uuid=ba9e3f02-429f-4659-9ae5-acf6715fb367"
+[LoungeRadio]="http://nl1.streamhosting.ch:80"
+[VeniceClassical]="http://116.202.241.212:8010"
+[InstrumentalHitsRadio]="https://panel.retrolandigital.com:8130/listen"
+[Cinemix]="http://51.81.46.118:1190")
 
 nowplaying=$(ps hw -C ffplay -o args= | sed -e 's/^.*nodisp //')
 
@@ -37,28 +37,40 @@ if [[ $# -gt 0 ]]; then
                         ;;
         esac
 fi
+
 echo -e "\0markup-rows\x1ftrue"
 
 if [[ -n $nowplaying ]]; then
     	echo -e "$DISCONNECT\0permanent\x1ftrue"
 fi
+
+if [[ $nowplaying = ${url[$FAVORITE]} ]]; then
+	stationplaying=$FAVORITE
+	echo -e "\0active\x1f1"
+    echo -e "$FAVORITE\0display\x1f$PAD$FAVORITE\x1fnonselectable\x1ftrue"
+else
+	echo -e "$FAVORITE\0display\x1f$PAD$FAVORITE"
+fi
+
+COUNTER=2
 	
-COUNTER=1
-for entry in "${stations[@]}"
+for entry in ${!url[@]}
 do
-    if [[ $nowplaying = ${url[$entry]} ]]; then
-	stationplaying=$entry
-	echo -e "\0active\x1f$COUNTER"
-        echo -e "$entry\0display\x1f$PAD$entry\x1fnonselectable\x1ftrue"
-        echo -e "\0message\x1f<b>Current station:</b> $stationplaying"
-    else
-    	echo -e "$entry\0display\x1f$PAD$entry"
+    if [[ $entry != $FAVORITE ]]; then
+		if [[ $nowplaying = ${url[$entry]} ]]; then
+			stationplaying=$entry
+			echo -e "\0active\x1f$COUNTER"
+			echo -e "$entry\0display\x1f$PAD$entry\x1fnonselectable\x1ftrue"
+		else
+			echo -e "$entry\0display\x1f$PAD$entry"
+		fi
+		let COUNTER++
     fi
-    let COUNTER++
 done
 
 echo -e "\0no-custom\x1ftrue"
 echo -e "\0prompt\x1fradio"
+
 if command -v amixer 2>&1 >/dev/null; then
     volume=$(amixer -M get Master | sed -e '1,4d' -e 's/^.*[0-9\] \[//' -e 's/\].*//')
     if [[ -n $nowplaying ]]; then
@@ -66,4 +78,10 @@ if command -v amixer 2>&1 >/dev/null; then
     else
         echo -e "\0message\x1f Nothing playing, volume: $volume"
     fi
+else
+    if [[ -n $nowplaying ]]; then
+			echo -e "\0message\x1f<b>Current station:</b> $stationplaying"
+	else
+        echo -e "\0message\x1f Nothing playing"
+	fi
 fi
