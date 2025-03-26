@@ -13,6 +13,9 @@ declare -rA url=(["Radio Dismuke"]="http://stream1.early1900s.org:8080"
 ["Lounge Radio"]="http://nl1.streamhosting.ch:80"
 ["Venice Classical"]="http://116.202.241.212:8010"
 ["Instrumental Hits Radio"]="https://panel.retrolandigital.com:8130/listen"
+["Bluegrass Country"]="https://ice24.securenetsystems.net/WAMU"
+["The Bluegrass Jamboree"]="https://s2.radio.co/sf0dcfa39a/listen"
+["Traditional Classic Country"]="http://207.244.126.86:7713/stream"
 ["Cinemix"]="http://51.81.46.118:1190")
 
 FAVORITE="Cinemix"
