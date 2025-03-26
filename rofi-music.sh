@@ -9,16 +9,16 @@ DISCONNECT="Disconnect"
 PAD=" "
 FAVORITE="Cinemix"
 
-declare -rA url=([RadioDismuke]="http://stream1.early1900s.org:8080"
-[1920sRadioNetwork]="http://208.85.242.72:8398"
-[1940sRadio]="http://199.189.111.28:8012"
-[1940sUKRadio]="http://91.121.134.23:8100"
-[BigBlueSwing]="http://209.236.126.18:8002"
-[ElectroLounge]="https://electrolounge.stream.laut.fm/electrolounge?pl=pls&t302=2024-08-26_23-57-55&uuid=ba9e3f02-429f-4659-9ae5-acf6715fb367"
-[LoungeRadio]="http://nl1.streamhosting.ch:80"
-[VeniceClassical]="http://116.202.241.212:8010"
-[InstrumentalHitsRadio]="https://panel.retrolandigital.com:8130/listen"
-[Cinemix]="http://51.81.46.118:1190")
+declare -rA url=(["Radio Dismuke"]="http://stream1.early1900s.org:8080"
+["1920s Radio Network"]="http://208.85.242.72:8398"
+["1940s Radio"]="http://199.189.111.28:8012"
+["1940s UK Radio"]="http://91.121.134.23:8100"
+["Big Blue Swing"]="http://209.236.126.18:8002"
+["Electro Lounge"]="https://electrolounge.stream.laut.fm/electrolounge?pl=pls&t302=2024-08-26_23-57-55&uuid=ba9e3f02-429f-4659-9ae5-acf6715fb367"
+["Lounge Radio"]="http://nl1.streamhosting.ch:80"
+["Venice Classical"]="http://116.202.241.212:8010"
+["Instrumental Hits Radio"]="https://panel.retrolandigital.com:8130/listen"
+["Cinemix"]="http://51.81.46.118:1190")
 
 nowplaying=$(ps hw -C ffplay -o args= | sed -e 's/^.*nodisp //')
 
@@ -44,8 +44,8 @@ if [[ -n $nowplaying ]]; then
     	echo -e "$DISCONNECT\0permanent\x1ftrue"
 fi
 
-if [[ $nowplaying = ${url[$FAVORITE]} ]]; then
-	stationplaying=$FAVORITE
+if [[ $nowplaying = ${url["$FAVORITE"]} ]]; then
+	stationplaying="$FAVORITE"
 	echo -e "\0active\x1f1"
     echo -e "$FAVORITE\0display\x1f$PAD$FAVORITE\x1fnonselectable\x1ftrue"
 else
@@ -54,11 +54,11 @@ fi
 
 COUNTER=2
 	
-for entry in ${!url[@]}
+for entry in "${!url[@]}"
 do
-    if [[ $entry != $FAVORITE ]]; then
-		if [[ $nowplaying = ${url[$entry]} ]]; then
-			stationplaying=$entry
+    if [[ "$entry" != $FAVORITE ]]; then
+		if [[ $nowplaying = ${url["$entry"]} ]]; then
+			stationplaying="$entry"
 			echo -e "\0active\x1f$COUNTER"
 			echo -e "$entry\0display\x1f$PAD$entry\x1fnonselectable\x1ftrue"
 		else
