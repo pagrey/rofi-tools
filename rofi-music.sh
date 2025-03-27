@@ -8,6 +8,11 @@ fi
 FAVORITE="Cinemix"
 PLAYLIST="/home/pagrey/Music/playlist/playlist.yml"
 
+if ! [[ -f $PLAYLIST ]]; then
+    echo "No valid playlist found!"
+    exit 0
+fi
+
 DISCONNECT="Disconnect"
 PAD=" "
 HTTP="//"
