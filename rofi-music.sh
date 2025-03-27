@@ -88,17 +88,8 @@ done
 echo -e "\0no-custom\x1ftrue"
 echo -e "\0prompt\x1fradio"
 
-if command -v amixer 2>&1 >/dev/null; then
-    volume=$(amixer -M get Master | sed -e '1,4d' -e 's/^.*[0-9\] \[//' -e 's/\].*//')
-    if [[ -n $nowplaying ]]; then
-        echo -e "\0message\x1f $stationplaying playing, volume: $volume"
-    else
-        echo -e "\0message\x1f Nothing playing, volume: $volume"
-    fi
+if [[ -n $nowplaying ]]; then
+    echo -e "\0message\x1f<b>Current station:</b> $stationplaying"
 else
-    if [[ -n $nowplaying ]]; then
-			echo -e "\0message\x1f<b>Current station:</b> $stationplaying"
-	else
-        echo -e "\0message\x1f Nothing playing"
-	fi
+    echo -e "\0message\x1f Nothing playing"
 fi
