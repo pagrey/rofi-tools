@@ -5,8 +5,13 @@ if ! command -v ffplay 2>&1 >/dev/null; then
     exit 0
 fi
 
-FAVORITE="Cinemix"
+#
+# Playlist file is yaml
+# station name: "station url"
+#
+
 PLAYLIST="/home/pagrey/Music/playlist/playlist.yml"
+FAVORITE="Cinemix"
 
 if ! [[ -f $PLAYLIST ]]; then
     echo "No valid playlist found!"
