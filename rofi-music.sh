@@ -51,25 +51,27 @@ done < $PLAYLIST
 nowplaying=$(ps hw -C ffplay -o args= | sed -e 's/^.*nodisp //')
 
 if [[ $# -gt 0 ]]; then
-        case "$1" in
-                "$DISCONNECT")
-			killall ffplay > /dev/null 2>&1
-			unset nowplaying
-			exit 0
-                        ;;
-                *)
-			killall ffplay > /dev/null 2>&1
-			coproc( ffplay -loglevel 8 -nodisp ${url[$1]} > /dev/null 2>&1 )
-			nowplaying=${url[$1]}
-			exit 0
-                        ;;
-        esac
+    case "$1" in
+	"$DISCONNECT")
+	    killall ffplay > /dev/null 2>&1
+	    unset nowplaying
+	    exit 0
+	    ;;
+	*)
+	    killall ffplay > /dev/null 2>&1
+	    coproc( ffplay -loglevel 8 -nodisp ${url[$1]} > /dev/null 2>&1 )
+	    nowplaying=${url[$1]}
+	    exit 0
+	    ;;
+    esac
 fi
 
 echo -e "\0markup-rows\x1ftrue"
+echo -e "\0no-custom\x1ftrue"
+echo -e "\0prompt\x1fradio"
 
 if [[ -n $nowplaying ]]; then
-    	echo -e "$DISCONNECT\0permanent\x1ftrue"
+    echo -e "$DISCONNECT\0permanent\x1ftrue"
 fi
 
 entry=$FAVORITE
@@ -84,9 +86,6 @@ do
 	let COUNTER++
     fi
 done
-
-echo -e "\0no-custom\x1ftrue"
-echo -e "\0prompt\x1fradio"
 
 if [[ -n $nowplaying ]]; then
     echo -e "\0message\x1f<b>Current station:</b> $stationplaying"
