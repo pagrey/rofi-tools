@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
-I3EXIT="Exit i3"
+if pgrep -x "i3" > /dev/null; then
+    SESSIONEXIT="Exit i3"
+else
+    SESSIONEXIT="Exit sway"
+fi
+
 LOGOUT="Logout"
 REBOOT="Reboot"
 POWEROFF="Poweroff"
@@ -34,8 +39,12 @@ if [[ $# -gt 0 ]]; then
 			coproc ( loginctl kill-session "${XDG_SESSION_ID-}"  > /dev/null  2>&1 )
 			exit 0
 			;;
-                "$I3EXIT")
-			coproc ( i3-msg exit  > /dev/null  2>&1 )
+                "$SESSIONEXIT")
+			if pgrep -x "i3" > /dev/null; then
+				coproc ( i3-msg exit > /dev/null  2>&1 )
+			else
+				coproc ( swaymsg exit > /dev/null  2>&1 )
+			fi
 			exit 0
                         ;;
                 "$REBOOT")
@@ -65,7 +74,7 @@ fi
 echo -e "\0no-custom\x1ftrue"
 echo -e "\0prompt\x1fpower"
 echo -e "\0markup-rows\x1ftrue"
-echo -e "$I3EXIT"
+echo -e "$SESSIONEXIT"
 echo -e "$LOGOUT"
 echo -e "$REBOOT"
 echo -e "$POWEROFF"

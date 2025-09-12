@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-if ! command -v ffplay 2>&1 >/dev/null; then
-    echo "ffplay not found!"
+if ! command -v mplayer 2>&1 >/dev/null; then
+    echo "mplayer not found!"
     exit 0
 fi
 
@@ -45,21 +45,23 @@ declare -A url
 
 while IFS= read -r line; do
     i=$(expr index "$line" $YAML)
-    url["${line:0:$i-1}"]="${line:$i+2:${#line}-$i-3}"
+    if [[ $i -gt 4 ]]; then
+        url["${line:0:$i-1}"]="${line:$i+2:${#line}-$i-3}"
+    fi
 done < $PLAYLIST
 
-nowplaying=$(ps hw -C ffplay -o args= | sed -e 's/^.*nodisp //')
+nowplaying=$(ps hw -C mplayer -o args= | sed -e '1q' | sed -e 's/^.*mplayer //')
 
 if [[ $# -gt 0 ]]; then
     case "$1" in
 	"$DISCONNECT")
-	    killall ffplay > /dev/null 2>&1
+	    killall mplayer > /dev/null 2>&1
 	    unset nowplaying
 	    exit 0
 	    ;;
 	*)
-	    killall ffplay > /dev/null 2>&1
-	    coproc( ffplay -loglevel 8 -nodisp ${url[$1]} > /dev/null 2>&1 )
+	    killall mplayer> /dev/null 2>&1
+	    coproc( mplayer ${url[$1]} > /dev/null 2>&1 )
 	    nowplaying=${url[$1]}
 	    exit 0
 	    ;;
