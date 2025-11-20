@@ -21,6 +21,8 @@ if [[ $# -gt 0 ]]; then
 	else
 		case "$1" in
 			"$ACTIVATE")
+				xset dpms $DEFAULT $DEFAULT $DEFAULT 
+				xset s $DEFAULT $DEFAULT 
 				sleep 0.25 && xset s activate
 				exit 0
 				;;
