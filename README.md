@@ -10,6 +10,7 @@ These scripts are implemented in rofi mode, not as a stand-alone executable that
 * Internet Radio using ffplay
 * Volume using alsa/amixer
 * Network Manager using iwd/iproute2
+* Screensaver control using xset
 
 ## Install
 
