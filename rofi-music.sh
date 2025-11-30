@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 
 if ! command -v mplayer 2>&1 >/dev/null; then
-    echo "mplayer not found!"
-    exit 0
+    if ! command -v ffplay 2>&1 >/dev/null; then
+        echo "No valid player found!"
+        exit 0
+    fi
+    player="ffplay"
+else
+    player="mplayer"
 fi
 
 #
@@ -50,18 +55,26 @@ while IFS= read -r line; do
     fi
 done < $PLAYLIST
 
-nowplaying=$(ps hw -C mplayer -o args= | sed -e '1q' | sed -e 's/^.*mplayer //')
+if [[ $player == "mplayer" ]]; then
+    nowplaying=$(ps hw -C mplayer -o args= | sed -e '1q' | sed -e 's/^.*mplayer //')
+else
+    nowplaying=$(ps hw -C ffplay -o args= | sed -e '1q' | sed -e 's/^.*ffplay -nodisp //')
+fi
 
 if [[ $# -gt 0 ]]; then
     case "$1" in
 	"$DISCONNECT")
-	    killall mplayer > /dev/null 2>&1
+	    killall $player > /dev/null 2>&1
 	    unset nowplaying
 	    exit 0
 	    ;;
 	*)
-	    killall mplayer> /dev/null 2>&1
-	    coproc( mplayer ${url[$1]} > /dev/null 2>&1 )
+	    killall $player> /dev/null 2>&1
+            if [[ $player == "mplayer" ]]; then
+	      coproc( $player ${url[$1]} > /dev/null 2>&1 )
+            else
+	      coproc( $player -nodisp ${url[$1]} > /dev/null 2>&1 )
+            fi
 	    nowplaying=${url[$1]}
 	    exit 0
 	    ;;
