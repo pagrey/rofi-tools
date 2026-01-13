@@ -16,25 +16,25 @@ if ! command -v swayidle 2>&1 >/dev/null; then
 fi
 if [[ $# -gt 0 ]]; then
   if [[ $1 =~ ^[0-9]+$ ]]; then
-    pkill swayidle && while pgrep -l swayidle; do sleep 1;done;
+    killall swayidle && while pgrep -l swayidle; do sleep 1;done;
     coproc( swayidle -w timeout $1 "swaymsg output eDP-1 power off" resume "swaymsg output eDP-1 power on" > /dev/null 2>&1 )
     exit 0
   else
     case "$1" in
       "$ACTIVATE")
-        pkill swayidle && while pgrep -l swayidle; do sleep 1;done;
+        killall swayidle && while pgrep -l swayidle; do sleep 1;done;
         coproc( swayidle -w timeout $DEFAULT "swaymsg output eDP-1 power off" resume "swaymsg output eDP-1 power on" > /dev/null 2>&1 )
 	swaymsg output eDP-1 power off > /dev/null 2>&1
 	until pids=$(pidof swayidle)
 	do   
-	    sleep 1
+	  sleep 1
 	done
 	sleep 1
         kill -SIGUSR1 $pids > /dev/null 2>&1
         exit 0
         ;;
       "$RESET")
-        pkill swayidle && while pgrep -l swayidle; do sleep 1;done;
+        killall swayidle && while pgrep -l swayidle; do sleep 1;done;
         coproc( swayidle -w timeout $DEFAULT "swaymsg output eDP-1 power off" resume "swaymsg output eDP-1 power on" > /dev/null 2>&1 )
         exit 0
         ;;
