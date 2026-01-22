@@ -40,9 +40,9 @@ print_row(){
     if [[ $nowplaying = $address ]]; then
 	stationplaying="$entry"
 	echo -e "\0active\x1f$COUNTER"
-	echo -e "$entry\0display\x1f$PAD$entry <span color='#555'> $shorturl</span>\x1fnonselectable\x1ftrue"
+	echo -e "$entry\0display\x1f$PAD$entry <span color='#152c3e'> $shorturl</span>\x1fnonselectable\x1ftrue"
     else
-	echo -e "$entry\0display\x1f$PAD$entry <span color='#555'> $shorturl</span>"
+	echo -e "$entry\0display\x1f$PAD$entry <span color='#152c3e'> $shorturl</span>"
     fi
 }
 

@@ -96,7 +96,7 @@ timeout=`xset q | sed -n -e '/timeout/p' | sed -e 's/.*[^0-9]\([0-9]\+\)[^0-9]*$
 
 fi
 
-echo -e "\0prompt\x1fEnter screensaver timeout (seconds)"
+echo -e "\0prompt\x1fscreensaver timeout"
 echo -e "\0markup-rows\x1ftrue"
 echo -e "\0keep-selection\x1ftrue"
 if [[ $standby != $OFF ]]; then
