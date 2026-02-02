@@ -2,6 +2,14 @@
 
 STATICIP="192.168.254.80"
 ROUTE="192.168.254.254"
+#
+# Theme markup format
+# COLOR="color='#000000'"
+#
+MARKUP=~/.config/rofi/markup_colors
+if [[ -f "$MARKUP" ]];then
+  source "$MARKUP"
+fi
 
 SCAN="Scan..."
 STARTWIRELESS="Enable Wifi"
@@ -41,8 +49,8 @@ show_menu () {
 		echo -e "\0no-custom\x1ftrue"
 		echo -e "\0prompt\x1fnetwork"
 		echo -e "\0message\x1f<b>Connected</b>:$SIP"
-		echo -e "$STOPWIRED\0display\x1f$STOPWIRED <span color='#152c3e'>$IL$WIRED up$IR</span>"
-		echo -e "$STARTWIRELESS\0display\x1f$STARTWIRELESS <span color='#152c3e'>$IL$WIRELESS down$IR</span>"
+		echo -e "$STOPWIRED\0display\x1f$STOPWIRED <span $DARK_BLUE>$IL$WIRED up$IR</span>"
+		echo -e "$STARTWIRELESS\0display\x1f$STARTWIRELESS <span $DARK_BLUE>$IL$WIRELESS down$IR</span>"
 		exit 0
 	elif ip link show $WIRELESS | grep -qs "[,]UP[,>]"; then
 		# wireless up
@@ -50,15 +58,15 @@ show_menu () {
 		echo -e "\0no-custom\x1ftrue"
 		echo -e "\0prompt\x1fnetwork"
 		echo -e "\0message\x1f<b>Connected</b>:$SIP"
-		echo -e "$STARTWIRED\0display\x1f$STARTWIRED <span color='#152c3e'>$IL$WIRED down$IR</span>"
-		echo -e "$STOPWIRELESS\0display\x1f$STOPWIRELESS <span color='#152c3e'>$IL$WIRELESS up$IR</span>"
+		echo -e "$STARTWIRED\0display\x1f$STARTWIRED <span $DARK_BLUE>$IL$WIRED down$IR</span>"
+		echo -e "$STOPWIRELESS\0display\x1f$STOPWIRELESS <span $DARK_BLUE>$IL$WIRELESS up$IR</span>"
 		echo -e "$CONFIGWIRELESS"
 		exit 0
 	else
 		echo -e "\0no-custom\x1ftrue"
 		echo -e "\0prompt\x1fnetwork"
-		echo -e "$STARTWIRED\0display\x1f$STARTWIRED <span color='#152c3e'>$IL$WIRED down$IR</span>"
-		echo -e "$STARTWIRELESS\0display\x1f$STARTWIRELESS <span color='#152c3e'>$IL$WIRELESS down$IR</span>"
+		echo -e "$STARTWIRED\0display\x1f$STARTWIRED <span $DARK_BLUE>$IL$WIRED down$IR</span>"
+		echo -e "$STARTWIRELESS\0display\x1f$STARTWIRELESS <span $DARK_BLUE>$IL$WIRELESS down$IR</span>"
 		exit 0
 	fi
 }
@@ -202,5 +210,5 @@ done <<< "$WORKING_LIST"
 if [[ "$CON_STATE" =~ " connected" ]]; then
 	echo -e "$DISCONNECTWIRELESS\0permanent\x1ftrue\x1fnonselectable\x1ffalse\x1fdisplay\x1f$DISCONNECTWIRELESS from $CURR_SSID"
 fi
-echo -e "$STOPWIRELESS\0permanent\x1ftrue\x1fdisplay\x1f$STOPWIRELESS <span color='#152c3e'>$IL$WIRELESS up$IR</span>"
+echo -e "$STOPWIRELESS\0permanent\x1ftrue\x1fdisplay\x1f$STOPWIRELESS <span $DARK_BLUE>$IL$WIRELESS up$IR</span>"
 

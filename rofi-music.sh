@@ -15,13 +15,24 @@ fi
 # station name: "station url"
 #
 
-PLAYLIST="/home/pagrey/Music/playlist/playlist.yml"
+PLAYLIST=~/Music/playlist/playlist.yml
 FAVORITE="Cinemix"
 
-if ! [[ -f $PLAYLIST ]]; then
+if ! [[ -f "$PLAYLIST" ]]; then
     echo "No valid playlist found!"
     exit 0
 fi
+
+#
+# Theme markup format
+# COLOR="color='#000000'"
+#
+
+MARKUP=~/.config/rofi/markup_colors
+if [[ -f "$MARKUP" ]];then
+  source "$MARKUP"
+fi
+
 
 DISCONNECT="Disconnect"
 PAD=" "
@@ -40,9 +51,9 @@ print_row(){
     if [[ $nowplaying = $address ]]; then
 	stationplaying="$entry"
 	echo -e "\0active\x1f$COUNTER"
-	echo -e "$entry\0display\x1f$PAD$entry <span color='#152c3e'> $shorturl</span>\x1fnonselectable\x1ftrue"
+	echo -e "$entry\0display\x1f$PAD$entry <span $DARK_BLUE> $shorturl</span>\x1fnonselectable\x1ftrue"
     else
-	echo -e "$entry\0display\x1f$PAD$entry <span color='#152c3e'> $shorturl</span>"
+	echo -e "$entry\0display\x1f$PAD$entry <span $DARK_BLUE> $shorturl</span>"
     fi
 }
 
@@ -53,7 +64,7 @@ while IFS= read -r line; do
     if [[ $i -gt 4 ]]; then
         url["${line:0:$i-1}"]="${line:$i+2:${#line}-$i-3}"
     fi
-done < $PLAYLIST
+done < "$PLAYLIST"
 
 if [[ $player == "mplayer" ]]; then
     nowplaying=$(ps hw -C mplayer -o args= | sed -e '1q' | sed -e 's/^.*mplayer //')
