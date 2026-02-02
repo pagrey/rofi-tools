@@ -41,8 +41,8 @@ show_menu () {
 		echo -e "\0no-custom\x1ftrue"
 		echo -e "\0prompt\x1fnetwork"
 		echo -e "\0message\x1f<b>Connected</b>:$SIP"
-		echo -e "$STOPWIRED\0display\x1f$STOPWIRED $IL$WIRED up$IR"
-		echo -e "$STARTWIRELESS\0display\x1f$STARTWIRELESS $IL$WIRELESS down$IR"
+		echo -e "$STOPWIRED\0display\x1f$STOPWIRED <span color='#152c3e'>$IL$WIRED up$IR</span>"
+		echo -e "$STARTWIRELESS\0display\x1f$STARTWIRELESS <span color='#152c3e'>$IL$WIRELESS down$IR</span>"
 		exit 0
 	elif ip link show $WIRELESS | grep -qs "[,]UP[,>]"; then
 		# wireless up
@@ -50,15 +50,15 @@ show_menu () {
 		echo -e "\0no-custom\x1ftrue"
 		echo -e "\0prompt\x1fnetwork"
 		echo -e "\0message\x1f<b>Connected</b>:$SIP"
-		echo -e "$STARTWIRED\0display\x1f$STARTWIRED $IL$WIRED down$IR"
-		echo -e "$STOPWIRELESS\0display\x1f$STOPWIRELESS $IL$WIRELESS up$IR"
+		echo -e "$STARTWIRED\0display\x1f$STARTWIRED <span color='#152c3e'>$IL$WIRED down$IR</span>"
+		echo -e "$STOPWIRELESS\0display\x1f$STOPWIRELESS <span color='#152c3e'>$IL$WIRELESS up$IR</span>"
 		echo -e "$CONFIGWIRELESS"
 		exit 0
 	else
 		echo -e "\0no-custom\x1ftrue"
 		echo -e "\0prompt\x1fnetwork"
-		echo -e "$STARTWIRED\0display\x1f$STARTWIRED $IL$WIRED down$IR"
-		echo -e "$STARTWIRELESS\0display\x1f$STARTWIRELESS $IL$WIRELESS down$IR"
+		echo -e "$STARTWIRED\0display\x1f$STARTWIRED <span color='#152c3e'>$IL$WIRED down$IR</span>"
+		echo -e "$STARTWIRELESS\0display\x1f$STARTWIRELESS <span color='#152c3e'>$IL$WIRELESS down$IR</span>"
 		exit 0
 	fi
 }
@@ -202,5 +202,5 @@ done <<< "$WORKING_LIST"
 if [[ "$CON_STATE" =~ " connected" ]]; then
 	echo -e "$DISCONNECTWIRELESS\0permanent\x1ftrue\x1fnonselectable\x1ffalse\x1fdisplay\x1f$DISCONNECTWIRELESS from $CURR_SSID"
 fi
-echo -e "$STOPWIRELESS\0permanent\x1ftrue\x1fdisplay\x1f$STOPWIRELESS $IL$WIRELESS up$IR"
+echo -e "$STOPWIRELESS\0permanent\x1ftrue\x1fdisplay\x1f$STOPWIRELESS <span color='#152c3e'>$IL$WIRELESS up$IR</span>"
 
