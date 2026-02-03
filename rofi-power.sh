@@ -4,7 +4,7 @@ set -e
 if pgrep -x "i3" > /dev/null; then
     SESSIONEXIT="Exit i3"
 else
-    SESSIONEXIT="Exit sway"
+    SESSIONEXIT="Exit Sway"
 fi
 
 LOGOUT="Logout"
@@ -52,8 +52,7 @@ if [[ $# -gt 0 ]]; then
 			echo -e "\0no-custom\x1ftrue"
 			echo -e "\0prompt\x1fconfirmation"
 			echo -e "\0message\x1fAre you sure?"
-			echo -e "$YES"
-			echo -e "$CANCEL"
+			echo -e "$YES\n$CANCEL"
 			exit 0
                         ;;
                 "$POWEROFF")
@@ -61,8 +60,7 @@ if [[ $# -gt 0 ]]; then
 			echo -e "\0no-custom\x1ftrue"
 			echo -e "\0prompt\x1fconfirmation"
 			echo -e "\0message\x1fAre you sure?"
-			echo -e "$YES"
-			echo -e "$CANCEL"
+			echo -e "$YES\n$CANCEL"
 			exit 0
                         ;;
                 *)
@@ -74,7 +72,5 @@ fi
 echo -e "\0no-custom\x1ftrue"
 echo -e "\0prompt\x1fpower"
 echo -e "\0markup-rows\x1ftrue"
-echo -e "$SESSIONEXIT"
-echo -e "$LOGOUT"
-echo -e "$REBOOT"
-echo -e "$POWEROFF"
+echo -e "$SESSIONEXIT\n$LOGOUT\n$REBOOT\n$POWEROFF"
+

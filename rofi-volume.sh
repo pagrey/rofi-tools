@@ -50,3 +50,4 @@ if [[ $mutedisabled = "off" ]]; then
 else
 	echo  -e "$MUTE\0message\x1f$TAB$MESSAGE"
 fi
+

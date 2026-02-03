@@ -45,7 +45,5 @@ echo -e "\0prompt\x1fbacklight"
 echo -e "\0markup-rows\x1ftrue"
 echo -e "\0keep-selection\x1ftrue"
 echo -e "\0message\x1f<b>Current level:</b> $percent%"
+echo -e "$INCREASE\n$DECREASE\n$MAXIMUM"
 
-echo -e "$INCREASE"
-echo -e "$DECREASE"
-echo -e "$MAXIMUM"
