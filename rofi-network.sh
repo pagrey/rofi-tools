@@ -1,10 +1,23 @@
 #!/usr/bin/env bash
 
-STATICIP="192.168.254.80"
-ROUTE="192.168.254.254"
 #
-# Theme markup format
-# COLOR="color='#000000'"
+# Network file format
+#
+#   STATICIP="xxx.xxx.xxx.xxx"
+#   ROUTE="xxx.xxx.xxx.xxx"
+#
+NETWORK=~/.config/rofi/network
+if [[ -f "$NETWORK" ]];then
+  source "$NETWORK"
+else
+   STATICIP="192.168.1.2"
+   ROUTE="192.168.1.1"
+fi
+
+#
+# Theme markup file format
+#
+#   COLOR="color='#000000'"
 #
 MARKUP=~/.config/rofi/markup_colors
 if [[ -f "$MARKUP" ]];then
