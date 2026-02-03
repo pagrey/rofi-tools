@@ -10,8 +10,8 @@ NETWORK=~/.config/rofi/network
 if [[ -f "$NETWORK" ]];then
   source "$NETWORK"
 else
-   STATICIP="192.168.1.2"
-   ROUTE="192.168.1.1"
+  STATICIP="192.168.1.2"
+  ROUTE="192.168.1.1"
 fi
 
 #
@@ -43,131 +43,131 @@ WIRELESS=$(find /sys/class/net/ -name "wl*" -printf %f  -quit)
 WIRED=$(find /sys/class/net/ -name "en*" -printf %f  -quit)
 
 if [[ -z $WIRELESS ]]; then
-	echo "Wireless network device not found!"
-	exit 0
+  echo "Wireless network device not found!"
+  exit 0
 fi
 if [[ -z $WIRED ]]; then
-	echo "Wired network device not found!"
-	exit 0
+  echo "Wired network device not found!"
+  exit 0
 fi
 if ! command -v iwctl 2>&1 >/dev/null; then
-	echo "iwd not found!"
-	exit 0
+  echo "iwd not found!"
+  exit 0
 fi
 
 show_menu () {
-	if ip link show $WIRED | grep -qs "[<,]UP[,>]"; then
-		# wired up
-		SIP=$(ip addr show $WIRED | grep inet | awk '{print $2}')
-		echo -e "\0no-custom\x1ftrue"
-		echo -e "\0prompt\x1fnetwork"
-		echo -e "\0message\x1f<b>Connected</b>:$SIP"
-		echo -e "$STOPWIRED\0display\x1f$STOPWIRED <span $DARK_BLUE>$IL$WIRED up$IR</span>"
-		echo -e "$STARTWIRELESS\0display\x1f$STARTWIRELESS <span $DARK_BLUE>$IL$WIRELESS down$IR</span>"
-		exit 0
-	elif ip link show $WIRELESS | grep -qs "[,]UP[,>]"; then
-		# wireless up
-		SIP=$(ip addr show $WIRELESS | grep inet | awk '{print $2}')
-		echo -e "\0no-custom\x1ftrue"
-		echo -e "\0prompt\x1fnetwork"
-		echo -e "\0message\x1f<b>Connected</b>:$SIP"
-		echo -e "$STARTWIRED\0display\x1f$STARTWIRED <span $DARK_BLUE>$IL$WIRED down$IR</span>"
-		echo -e "$STOPWIRELESS\0display\x1f$STOPWIRELESS <span $DARK_BLUE>$IL$WIRELESS up$IR</span>"
-		echo -e "$CONFIGWIRELESS"
-		exit 0
-	else
-		echo -e "\0no-custom\x1ftrue"
-		echo -e "\0prompt\x1fnetwork"
-		echo -e "$STARTWIRED\0display\x1f$STARTWIRED <span $DARK_BLUE>$IL$WIRED down$IR</span>"
-		echo -e "$STARTWIRELESS\0display\x1f$STARTWIRELESS <span $DARK_BLUE>$IL$WIRELESS down$IR</span>"
-		exit 0
-	fi
+  if ip link show $WIRED | grep -qs "[<,]UP[,>]"; then
+    # wired up
+    SIP=$(ip addr show $WIRED | grep inet | awk '{print $2}')
+    echo -e "\0no-custom\x1ftrue"
+    echo -e "\0prompt\x1fnetwork"
+    echo -e "\0message\x1f<b>Connected</b>:$SIP"
+    echo -e "$STOPWIRED\0display\x1f$STOPWIRED <span $DARK_BLUE>$IL$WIRED up$IR</span>"
+    echo -e "$STARTWIRELESS\0display\x1f$STARTWIRELESS <span $DARK_BLUE>$IL$WIRELESS down$IR</span>"
+    exit 0
+  elif ip link show $WIRELESS | grep -qs "[,]UP[,>]"; then
+    # wireless up
+    SIP=$(ip addr show $WIRELESS | grep inet | awk '{print $2}')
+    echo -e "\0no-custom\x1ftrue"
+    echo -e "\0prompt\x1fnetwork"
+    echo -e "\0message\x1f<b>Connected</b>:$SIP"
+    echo -e "$STARTWIRED\0display\x1f$STARTWIRED <span $DARK_BLUE>$IL$WIRED down$IR</span>"
+    echo -e "$STOPWIRELESS\0display\x1f$STOPWIRELESS <span $DARK_BLUE>$IL$WIRELESS up$IR</span>"
+    echo -e "$CONFIGWIRELESS"
+    exit 0
+  else
+    echo -e "\0no-custom\x1ftrue"
+    echo -e "\0prompt\x1fnetwork"
+    echo -e "$STARTWIRED\0display\x1f$STARTWIRED <span $DARK_BLUE>$IL$WIRED down$IR</span>"
+    echo -e "$STARTWIRELESS\0display\x1f$STARTWIRELESS <span $DARK_BLUE>$IL$WIRELESS down$IR</span>"
+    exit 0
+  fi
 }
 
 get_known_networks () {
 IW_KNOWN=$(iwctl known-networks list | sed -e '/^--/d' -e 1,4d | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g")
 }
 get_networks () {
-	IW_NETWORKS=$(iwctl station $WIRELESS get-networks | sed -e '/^--/d' -e 1,4d | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g")
-	NETWORK_LIST=""
-	while IFS= read -r line; do
-		line=${line:6}
-		SSID_NAME=$(echo "$line" | sed -e 's/\(\s*psk.*\)//' -e 's/\(\s*open.*\)//')
-		line=""
-		line+=$SSID_NAME
-		line+=$'\n'
-		NETWORK_LIST+=$line
-	done <<< "$IW_NETWORKS"
-	IW_NETWORKS=$(echo "$NETWORK_LIST" | sed '$d')
+  IW_NETWORKS=$(iwctl station $WIRELESS get-networks | sed -e '/^--/d' -e 1,4d | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g")
+  NETWORK_LIST=""
+  while IFS= read -r line; do
+    line=${line:6}
+    SSID_NAME=$(echo "$line" | sed -e 's/\(\s*psk.*\)//' -e 's/\(\s*open.*\)//')
+    line=""
+    line+=$SSID_NAME
+    line+=$'\n'
+    NETWORK_LIST+=$line
+  done <<< "$IW_NETWORKS"
+  IW_NETWORKS=$(echo "$NETWORK_LIST" | sed '$d')
 }
 
 # connect to new network with password
 if [[ -n $ROFI_DATA ]]; then
-	iwctl --passphrase="$@" station $WIRELESS connect "$ROFI_DATA"
-	exit 0
+  iwctl --passphrase="$@" station $WIRELESS connect "$ROFI_DATA"
+  exit 0
 fi
 
 echo -e "\0markup-rows\x1ftrue"
 
 if [[ $# -gt 0 ]]; then
-        case "$1" in
-                "$DISCONNECTWIRELESS")
-                        iwctl station $WIRELESS disconnect
-			exit 0
-                        ;;
-		"$STARTWIRELESS")
-			if ip link show $WIRED | grep -qs "[,]UP[,>]"; then
-				sudo ip address flush dev $WIRED
-				sudo ip route flush dev $WIRED
-				sudo ip link set $WIRED down
-			fi
-			sudo ip link set $WIRELESS up
-			# start iwd and scan
-			while [[ -n $(iwctl station $WIRELESS scan) ]]; do
-				sleep 0.25
-			done
-			;;
-		"$STOPWIRELESS")
-                        iwctl station $WIRELESS disconnect
-			sudo ip link set $WIRELESS down
-			exit 0
-			;;
-		"$STARTWIRED")
-			if ip link show $WIRELESS | grep -qs "[,]UP[,>]"; then
-				sudo ip link set $WIRELESS down
-			fi
-			sudo ip link set $WIRED up
-			sudo ip address add $STATICIP/24 brd + dev $WIRED
-			sudo ip route add default via $ROUTE dev $WIRED
-			exit 0
-			;;
-		"$STOPWIRED")
-			sudo ip address flush dev $WIRED
-			sudo ip route flush dev $WIRED
-			sudo ip link set $WIRED down
-			exit 0
-			;;
-                "$SCAN")
-                        ;;
-                "$CONFIGWIRELESS")
-                        ;;
-                *)
-                        NEW_NETWORK="$@"
-			get_known_networks
-			if [[ "$IW_KNOWN" =~ "$NEW_NETWORK" ]]; then
-				iwctl station $WIRELESS connect "$NEW_NETWORK" 
-			else
-					echo -e "\0no-custom\x1ffalse"
-					echo -e "\0data\x1f$NEW_NETWORK"
-					echo -e "\0prompt\x1fnetwork"
-					echo -e "\0message\x1fEnter password for $NEW_NETWORK"
-					echo -e "password"
-			fi
-			exit 0
-                        ;;
-        esac
+  case "$1" in
+    "$DISCONNECTWIRELESS")
+      iwctl station $WIRELESS disconnect
+      exit 0
+      ;;
+    "$STARTWIRELESS")
+      if ip link show $WIRED | grep -qs "[,]UP[,>]"; then
+        sudo ip address flush dev $WIRED
+        sudo ip route flush dev $WIRED
+        sudo ip link set $WIRED down
+      fi
+      sudo ip link set $WIRELESS up
+      # start iwd and scan
+      while [[ -n $(iwctl station $WIRELESS scan) ]]; do
+        sleep 0.25
+      done
+      ;;
+    "$STOPWIRELESS")
+      iwctl station $WIRELESS disconnect
+      sudo ip link set $WIRELESS down
+      exit 0
+      ;;
+    "$STARTWIRED")
+      if ip link show $WIRELESS | grep -qs "[,]UP[,>]"; then
+        sudo ip link set $WIRELESS down
+      fi
+      sudo ip link set $WIRED up
+      sudo ip address add $STATICIP/24 brd + dev $WIRED
+      sudo ip route add default via $ROUTE dev $WIRED
+      exit 0
+      ;;
+    "$STOPWIRED")
+      sudo ip address flush dev $WIRED
+      sudo ip route flush dev $WIRED
+      sudo ip link set $WIRED down
+      exit 0
+      ;;
+    "$SCAN")
+      ;;
+    "$CONFIGWIRELESS")
+      ;;
+    *)
+      NEW_NETWORK="$@"
+      get_known_networks
+      if [[ "$IW_KNOWN" =~ "$NEW_NETWORK" ]]; then
+        iwctl station $WIRELESS connect "$NEW_NETWORK" 
+      else
+        echo -e "\0no-custom\x1ffalse"
+        echo -e "\0data\x1f$NEW_NETWORK"
+        echo -e "\0prompt\x1fnetwork"
+        echo -e "\0message\x1fEnter password for $NEW_NETWORK"
+        echo -e "password"
+      fi
+      exit 0
+      ;;
+  esac
 else
-	show_menu
+  show_menu
 fi
 
 CURR_SSID=$(iwctl station $WIRELESS show | sed -n 's/^\s*Connected\snetwork\s*\(\S*\)\s*$/\1/p')
@@ -175,9 +175,9 @@ CURR_IP=$(iwctl station $WIRELESS show | sed -n 's/^\s*IPv4\saddress\s*\(\S*\)\s
 
 echo -e "\0no-custom\x1ftrue"
 if [[ -n $CURR_SSID && -n $CURR_IP ]]; then
-	SSID_MESSAGE="Connected to $CURR_SSID"
+  SSID_MESSAGE="Connected to $CURR_SSID"
 else
-	SSID_MESSAGE=""
+  SSID_MESSAGE=""
 fi
 
 get_known_networks
@@ -186,11 +186,11 @@ get_networks
 
 echo -e "\0prompt\x1fnetwork"
 if [[ -n $@ && "$1" = "$SCAN" ]]; then
-	WORKING_LIST="$IW_NETWORKS"
-	echo -e "\0message\x1fAvailable wireless networks"
+  WORKING_LIST="$IW_NETWORKS"
+  echo -e "\0message\x1fAvailable wireless networks"
 else
-	WORKING_LIST="$IW_KNOWN"
-	echo -e "\0message\x1fSaved wireless networks"
+  WORKING_LIST="$IW_KNOWN"
+  echo -e "\0message\x1fSaved wireless networks"
 fi
 
 echo -e "$SCAN\0permanent\x1ftrue\x1fdisplay\x1f$CONFIGWIRELESS"
@@ -201,27 +201,27 @@ CON_STATE=$(iwctl station $WIRELESS show)
 
 COUNTER=1
 while IFS= read -r line; do
-	if [[ -n $@ && "$1" = "$SCAN" ]]; then
-        	line=${line:0}
-	else
-        	line=${line:2}
-	fi
-	SSID_NAME=$(echo "$line" | sed -e 's/\(\s*psk.*\)//' -e 's/\(\s*open.*\)//')
-        if [[ $IW_NETWORKS =~ $SSID_NAME ]]; then
-		if [[ -n "$CURR_SSID"  &&  "$SSID_NAME" = "$CURR_SSID" ]]; then
-			echo -e "${SSID_NAME}\0display\x1f$PAD<b>${SSID_NAME}</b> $NL$CURR_IP$NR\x1fnonselectable\x1ftrue"
-			echo -e "\0active\x1f$COUNTER"
-		else
-			echo -e "${SSID_NAME}\0display\x1f$PAD${SSID_NAME}\x1fnonselectable\x1ffalse"
-		fi
-		let COUNTER++
-	else
-		echo -e "${SSID_NAME}\0display\x1f$PAD${SSID_NAME} $NL$NF$NR\x1fnonselectable\x1ftrue"
-		let COUNTER++
-	fi
+  if [[ -n $@ && "$1" = "$SCAN" ]]; then
+    line=${line:0}
+  else
+    line=${line:2}
+  fi
+  SSID_NAME=$(echo "$line" | sed -e 's/\(\s*psk.*\)//' -e 's/\(\s*open.*\)//')
+  if [[ $IW_NETWORKS =~ $SSID_NAME ]]; then
+    if [[ -n "$CURR_SSID"  &&  "$SSID_NAME" = "$CURR_SSID" ]]; then
+      echo -e "${SSID_NAME}\0display\x1f$PAD<b>${SSID_NAME}</b> $NL$CURR_IP$NR\x1fnonselectable\x1ftrue"
+      echo -e "\0active\x1f$COUNTER"
+    else
+      echo -e "${SSID_NAME}\0display\x1f$PAD${SSID_NAME}\x1fnonselectable\x1ffalse"
+    fi
+    let COUNTER++
+  else
+    echo -e "${SSID_NAME}\0display\x1f$PAD${SSID_NAME} $NL$NF$NR\x1fnonselectable\x1ftrue"
+    let COUNTER++
+  fi
 done <<< "$WORKING_LIST"
 if [[ "$CON_STATE" =~ " connected" ]]; then
-	echo -e "$DISCONNECTWIRELESS\0permanent\x1ftrue\x1fnonselectable\x1ffalse\x1fdisplay\x1f$DISCONNECTWIRELESS from $CURR_SSID"
+  echo -e "$DISCONNECTWIRELESS\0permanent\x1ftrue\x1fnonselectable\x1ffalse\x1fdisplay\x1f$DISCONNECTWIRELESS from $CURR_SSID"
 fi
 echo -e "$STOPWIRELESS\0permanent\x1ftrue\x1fdisplay\x1f$STOPWIRELESS <span $DARK_BLUE>$IL$WIRELESS up$IR</span>"
 
